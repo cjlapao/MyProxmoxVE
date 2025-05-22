@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 community-scripts ORG
 # Author: bvdberg01
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -35,7 +35,7 @@ function update_script() {
     msg_ok "Stopped ${APP}"
 
     msg_info "Updating ${APP} to v${RELEASE}"
-    cd /opt
+    cd /opt || exit
     mv /opt/listmonk/ /opt/listmonk-backup
     mkdir /opt/listmonk/
     curl -fsSL "https://github.com/knadh/listmonk/releases/download/v${RELEASE}/listmonk_${RELEASE}_linux_amd64.tar.gz" -o $(basename "https://github.com/knadh/listmonk/releases/download/v${RELEASE}/listmonk_${RELEASE}_linux_amd64.tar.gz")

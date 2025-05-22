@@ -5,7 +5,7 @@ import { Script } from "@/lib/types";
 import { getDisplayValueFromType } from "../ScriptInfoBlocks";
 
 const getInstallCommand = (scriptPath = "", isAlpine = false) => {
-  const url = `https://raw.githubusercontent.com/community-scripts/${basePath}/main/${scriptPath}`;
+  const url = `https://raw.githubusercontent.com/cjlapao/${basePath}/main/${scriptPath}`;
   return isAlpine ? `bash -c "$(curl -fsSL ${url})"` : `bash -c "$(curl -fsSL ${url})"`;
 };
 

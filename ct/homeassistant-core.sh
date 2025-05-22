@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 community-scripts ORG
 # Author: tteck (tteckster) | Co-Author: MickLesk (CanbiZ)
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -64,7 +64,7 @@ function update_script() {
       $STD deactivate
       mv /srv/homeassistant "/srv/homeassistant_backup_$PY_VER"
       mkdir -p /srv/homeassistant
-      cd /srv/homeassistant
+      cd /srv/homeassistant || exit
 
       $STD uv python install 3.13
       UV_PYTHON=$(uv python list | awk '/3\.13\.[0-9]+.*\/root\/.local/ {print $2; exit}')
@@ -105,7 +105,7 @@ function update_script() {
     msg_info "Installing Home Assistant Community Store (HACS)"
     $STD apt update
     $STD apt install -y unzip
-    cd /root/.homeassistant
+    cd /root/.homeassistant || exit
     $STD bash <(curl -fsSL https://get.hacs.xyz)
     msg_ok "Installed Home Assistant Community Store (HACS)"
     echo -e "\n Reboot Home Assistant and clear browser cache then Add HACS integration.\n"
@@ -117,7 +117,7 @@ function update_script() {
     read -r -p "${TAB3}Would you like to use No Authentication? <y/N> " prompt
     msg_info "Installing FileBrowser"
     RELEASE=$(curl -fsSL https://api.github.com/repos/filebrowser/filebrowser/releases/latest | grep -o '"tag_name": ".*"' | sed 's/"//g' | sed 's/tag_name: //g')
-    $STD curl -fsSL https://github.com/filebrowser/filebrowser/releases/download/$RELEASE/linux-amd64-filebrowser.tar.gz | tar -xzv -C /usr/local/bin
+    $STD curl -fsSL https://github.com/filebrowser/filebrowser/releases/download/"$RELEASE"/linux-amd64-filebrowser.tar.gz | tar -xzv -C /usr/local/bin
 
     if [[ "${prompt,,}" =~ ^(y|yes)$ ]]; then
       $STD filebrowser config init -a '0.0.0.0'

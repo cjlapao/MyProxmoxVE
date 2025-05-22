@@ -1,7 +1,7 @@
 
 # Community Scripts Contribution Guide
 
-## **Welcome to the communty-scripts Repository!** 
+## **Welcome to the communty-scripts Repository!**
 
 📜 These documents outline the essential coding standards for all our scripts and JSON files. Adhering to these standards ensures that our codebase remains consistent, readable, and maintainable. By following these guidelines, we can improve collaboration, reduce errors, and enhance the overall quality of our project.
 
@@ -28,7 +28,6 @@ By following the coding standards outlined in this document, we ensure that our 
 
 Let's work together to keep our codebase clean, efficient, and maintainable! 💪🚀
 
-
 ## Getting Started
 
 Before contributing, please ensure that you have the following setup:
@@ -40,6 +39,7 @@ Before contributing, please ensure that you have the following setup:
    - [Shell Format](https://marketplace.visualstudio.com/items?itemName=foxundermoon.shell-format)
 
 ### Important Notes
+
 - Use [AppName.sh](https://github.com/community-scripts/ProxmoxVE/blob/main/.github/CONTRIBUTOR_AND_GUIDES/ct/AppName.sh) and [AppName-install.sh](https://github.com/community-scripts/ProxmoxVE/blob/main/.github/CONTRIBUTOR_AND_GUIDES/install/AppName-install.sh) as templates when creating new scripts. Final version of the script (the one you will push for review), must have all comments removed, except the ones in the file header.
 
 ---
@@ -73,21 +73,25 @@ All PR's related to new scripts should be made against our Dev repository first,
 You will need to adjust paths mentioned further down this document to match the repo you're pushing the scripts to.
 
 ### 1. Fork the repository
+
 Fork to your GitHub account
 
-### 2. Clone your fork on your local environment 
+### 2. Clone your fork on your local environment
+
 ```bash
 git clone https://github.com/yourUserName/ForkName
 ```
 
 ### 3. Create a new branch
+
 ```bash
 git switch -c your-feature-branch
 ```
 
 ### 4. Change paths in build.func install.func and AppName.sh
+
 To be able to develop from your own branch you need to change:\
-`https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main`\
+`https://raw.githubusercontent.com/cjlapao/ProxmoxVE/main`\
 to\
 `https://raw.githubusercontent.com/[USER]/[REPOSITORY]/refs/heads/[BRANCH]`\
  in following files:
@@ -99,23 +103,26 @@ to\
 Example: `https://raw.githubusercontent.com/tremor021/PromoxVE/refs/heads/testbranch`
 
 Also you need to change:\
-`https://raw.githubusercontent.com/community-scripts/ProxmoxVE/raw/main`\
+`https://raw.githubusercontent.com/cjlapao/ProxmoxVE/raw/main`\
 to\
 `https://raw.githubusercontent.com/[USER]/[REPOSITORY]/raw/[BRANCH]`\
 in `misc/install.func` in order for `update` shell command to work.\
 These changes are only while writing and testing your scripts. Before opening a Pull Request, you should change all above mentioned paths in `misc/build.func`, `misc/install.func` and `ct/AppName.sh` to point to the original paths.
 
 ### 4. Commit changes (without build.func and install.func!)
+
 ```bash
 git commit -m "Your commit message"
 ```
 
 ### 5. Push to your fork
+
 ```bash
 git push origin your-feature-branch
 ```
 
 ### 6. Create a Pull Request
+
 Open a Pull Request from your feature branch to the main branch on the Dev repository. You must only include your **$AppName.sh**, **$AppName-install.sh** and **$AppName.json** files in the pull request.
 
 ---
@@ -125,5 +132,3 @@ Open a Pull Request from your feature branch to the main branch on the Dev repos
 - [CT Template: AppName.sh](https://github.com/community-scripts/ProxmoxVE/blob/main/.github/CONTRIBUTOR_AND_GUIDES/ct/AppName.sh)
 - [Install Template: AppName-install.sh](https://github.com/community-scripts/ProxmoxVE/blob/main/.github/CONTRIBUTOR_AND_GUIDES/install/AppName-install.sh)
 - [JSON Template: AppName.json](https://github.com/community-scripts/ProxmoxVE/blob/main/.github/CONTRIBUTOR_AND_GUIDES/json/AppName.json)
-
-

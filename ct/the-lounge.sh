@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 community-scripts ORG
 # Author: kristocopani
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -42,9 +42,9 @@ function update_script() {
 
     msg_info "Updating ${APP} to v${RELEASE}"
     $STD apt-get install --only-upgrade nodejs
-    cd /opt
+    cd /opt || exit
     curl -fsSL "https://github.com/thelounge/thelounge-deb/releases/download/v${RELEASE}/thelounge_${RELEASE}_all.deb" -o $(basename "https://github.com/thelounge/thelounge-deb/releases/download/v${RELEASE}/thelounge_${RELEASE}_all.deb")
-    dpkg -i ./thelounge_${RELEASE}_all.deb
+    dpkg -i ./thelounge_"${RELEASE}"_all.deb
     msg_ok "Updated ${APP} to v${RELEASE}"
 
     msg_info "Starting Service"

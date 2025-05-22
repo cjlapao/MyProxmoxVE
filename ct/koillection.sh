@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 community-scripts ORG
 # Author: bvdberg01
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -34,19 +34,19 @@ function update_script() {
     msg_ok "Stopped Service"
 
     msg_info "Updating ${APP} to v${RELEASE}"
-    cd /opt
+    cd /opt || exit
     mv /opt/koillection/ /opt/koillection-backup
     curl -fsSL "https://github.com/benjaminjonard/koillection/archive/refs/tags/${RELEASE}.zip" -o $(basename "https://github.com/benjaminjonard/koillection/archive/refs/tags/${RELEASE}.zip")
     unzip -q "${RELEASE}.zip"
     mv "/opt/koillection-${RELEASE}" /opt/koillection
-    cd /opt/koillection
+    cd /opt/koillection || exit
     cp -r /opt/koillection-backup/.env.local /opt/koillection
     cp -r /opt/koillection-backup/public/uploads/. /opt/koillection/public/uploads/
     export COMPOSER_ALLOW_SUPERUSER=1
     $STD composer install --no-dev -o --no-interaction --classmap-authoritative
     $STD php bin/console doctrine:migrations:migrate --no-interaction
     $STD php bin/console app:translations:dump
-    cd assets/
+    cd assets/ || exit
     $STD yarn install
     $STD yarn build
     chown -R www-data:www-data /opt/koillection/public/uploads

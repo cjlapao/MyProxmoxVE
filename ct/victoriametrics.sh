@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 community-scripts ORG
 # Author: Slaviša Arežina (tremor021)
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -35,12 +35,12 @@ function update_script() {
 
     msg_info "Updating ${APP} to v${RELEASE}"
     temp_dir=$(mktemp -d)
-    cd $temp_dir
+    cd $temp_dir || exit
     curl -fsSL "https://github.com/VictoriaMetrics/VictoriaMetrics/releases/download/v${RELEASE}/victoria-metrics-linux-amd64-v${RELEASE}.tar.gz" -o $(basename "https://github.com/VictoriaMetrics/VictoriaMetrics/releases/download/v${RELEASE}/victoria-metrics-linux-amd64-v${RELEASE}.tar.gz")
     curl -fsSL "https://github.com/VictoriaMetrics/VictoriaMetrics/releases/download/v${RELEASE}/vmutils-linux-amd64-v${RELEASE}.tar.gz" -o $(basename "https://github.com/VictoriaMetrics/VictoriaMetrics/releases/download/v${RELEASE}/vmutils-linux-amd64-v${RELEASE}.tar.gz")
     find /opt/victoriametrics -maxdepth 1 -type f -executable -delete
-    tar -xf victoria-metrics-linux-amd64-v${RELEASE}.tar.gz -C /opt/victoriametrics
-    tar -xf vmutils-linux-amd64-v${RELEASE}.tar.gz -C /opt/victoriametrics
+    tar -xf victoria-metrics-linux-amd64-v"${RELEASE}".tar.gz -C /opt/victoriametrics
+    tar -xf vmutils-linux-amd64-v"${RELEASE}".tar.gz -C /opt/victoriametrics
     chmod +x /opt/victoriametrics/*
     echo "${RELEASE}" >/opt/${APP}_version.txt
     msg_ok "Updated $APP to v${RELEASE}"
@@ -50,7 +50,7 @@ function update_script() {
     msg_ok "Started $APP"
 
     msg_info "Cleaning Up"
-    rm -rf $temp_dir
+    rm -rf "$temp_dir"
     msg_ok "Cleaned"
     msg_ok "Updated Successfully"
   else

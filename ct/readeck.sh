@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 tteck
 # Author: tteck (tteckster)
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -31,7 +31,7 @@ function update_script() {
   LATEST=$(curl -fsSL https://codeberg.org/readeck/readeck/releases/ | grep -oP '/releases/tag/\K\d+\.\d+\.\d+' | head -1)
   systemctl stop readeck.service
   rm -rf /opt/readeck/readeck
-  cd /opt/readeck
+  cd /opt/readeck || exit
   curl -fsSL "https://codeberg.org/readeck/readeck/releases/download/${LATEST}/readeck-${LATEST}-linux-amd64" -o "readeck"
   chmod a+x readeck
   systemctl start readeck.service

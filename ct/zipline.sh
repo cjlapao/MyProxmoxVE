@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 tteck
 # Author: MickLesk (Canbiz)
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -46,7 +46,7 @@ function update_script() {
     unzip -q v"${RELEASE}".zip
     rm -R /opt/zipline
     mv zipline-"${RELEASE}" /opt/zipline
-    cd /opt/zipline
+    cd /opt/zipline || exit
     mv /opt/.env /opt/zipline/.env
     $STD pnpm install
     $STD pnpm build

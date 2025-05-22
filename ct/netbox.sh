@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 community-scripts ORG
 # Author: bvdberg01
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -37,10 +37,10 @@ function update_script() {
 
     msg_info "Updating $APP to v${RELEASE}"
     mv /opt/netbox/ /opt/netbox-backup
-    cd /opt
+    cd /opt || exit
     curl -fsSL "https://github.com/netbox-community/netbox/archive/refs/tags/v${RELEASE}.zip" -o $(basename "https://github.com/netbox-community/netbox/archive/refs/tags/v${RELEASE}.zip")
     unzip -q "v${RELEASE}.zip"
-    mv /opt/netbox-${RELEASE}/ /opt/netbox/
+    mv /opt/netbox-"${RELEASE}"/ /opt/netbox/
 
     cp -r /opt/netbox-backup/netbox/netbox/configuration.py /opt/netbox/netbox/netbox/
     cp -r /opt/netbox-backup/netbox/media/ /opt/netbox/netbox/

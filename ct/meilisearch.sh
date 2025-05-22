@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -s https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
+source <(curl -s https://raw.githubusercontent.com/cjlapao/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 community-scripts ORG
 # Author: MickLesk (CanbiZ)
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -41,8 +41,8 @@ function update_script() {
     msg_info "Updating Meilisearch"
     tmp_file=$(mktemp)
     RELEASE=$(curl -s https://api.github.com/repos/meilisearch/meilisearch/releases/latest | grep "tag_name" | awk '{print substr($2, 2, length($2)-3) }')
-    curl -fsSL https://github.com/meilisearch/meilisearch/releases/latest/download/meilisearch.deb -o $tmp_file
-    $STD dpkg -i $tmp_file
+    curl -fsSL https://github.com/meilisearch/meilisearch/releases/latest/download/meilisearch.deb -o "$tmp_file"
+    $STD dpkg -i "$tmp_file"
     echo "$RELEASE" >/opt/meilisearch_version.txt
     msg_ok "Updated Meilisearch"
 
@@ -68,10 +68,10 @@ function update_script() {
     cp /opt/meilisearch-ui/.env.local /tmp/.env.local.bak
     rm -rf /opt/meilisearch-ui
     mkdir -p /opt/meilisearch-ui
-    curl -fsSL "https://github.com/riccox/meilisearch-ui/archive/refs/tags/${RELEASE_UI}.zip" -o $tmp_file
+    curl -fsSL "https://github.com/riccox/meilisearch-ui/archive/refs/tags/${RELEASE_UI}.zip" -o "$tmp_file"
     unzip -q "$tmp_file" -d "$tmp_dir"
     mv "$tmp_dir"/*/* /opt/meilisearch-ui/
-    cd /opt/meilisearch-ui
+    cd /opt/meilisearch-ui || exit
     sed -i 's|const hash = execSync("git rev-parse HEAD").toString().trim();|const hash = "unknown";|' /opt/meilisearch-ui/vite.config.ts
     mv /tmp/.env.local.bak /opt/meilisearch-ui/.env.local
     $STD pnpm install

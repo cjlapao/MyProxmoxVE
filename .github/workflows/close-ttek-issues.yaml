@@ -25,9 +25,9 @@ jobs:
                     
             Also make sure your Bash command starts with:
             \`\`\`bash
-            bash <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/ct/...)
+            bash <(curl -fsSL https://raw.githubusercontent.com/cjlapao/ProxmoxVE/main/ct/...)
             \`\`\`
-            
+
             This issue is being closed automatically.`;
 
               await github.rest.issues.createComment({

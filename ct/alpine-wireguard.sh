@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -s https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
+source <(curl -s https://raw.githubusercontent.com/cjlapao/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 community-scripts ORG
 # Author: MickLesk (CanbiZ)
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -30,7 +30,7 @@ function update_script() {
 
   if [[ -d /etc/wgdashboard/src ]]; then
     msg_info "update WGDashboard"
-    cd /etc/wgdashboard/src
+    cd /etc/wgdashboard/src || exit
     $STD echo "y" | ./wgd.sh update
     $STD ./wgd.sh start
     msg_ok "WGDashboard updated"

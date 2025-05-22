@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 community-scripts ORG
 # Author: MickLesk (CanbiZ)
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -49,7 +49,7 @@ function update_script() {
   msg_ok "Stopped service $SERVICE_NAME"
 
   msg_info "Updating dependencies using pnpm"
-  cd "$PROJECT_DIR"
+  cd "$PROJECT_DIR" || exit
   $STD pnpm up --latest
   $STD pnpm build
   msg_ok "Updated dependencies using pnpm"

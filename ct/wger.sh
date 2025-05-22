@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 community-scripts ORG
 # Author: Slaviša Arežina (tremor021)
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -38,7 +38,7 @@ function update_script() {
     curl -fsSL "https://github.com/wger-project/wger/archive/refs/tags/$RELEASE.tar.gz" -o "$temp_file"
     tar xzf "$temp_file"
     cp -rf wger-"$RELEASE"/* /home/wger/src
-    cd /home/wger/src
+    cd /home/wger/src || exit
     python3 manage.py migrate &>/dev/null
     yarn install &>/dev/null
     yarn build:css:sass &>/dev/null

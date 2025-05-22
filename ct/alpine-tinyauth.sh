@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -s https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
+source <(curl -s https://raw.githubusercontent.com/cjlapao/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 community-scripts ORG
 # Author: Slaviša Arežina (tremor021)
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -39,11 +39,11 @@ function update_script() {
     mkdir -p /opt/tinyauth
     curl -fsSL "https://github.com/steveiliop56/tinyauth/archive/refs/tags/v${RELEASE}.tar.gz" -o "$temp_file"
     tar -xzf "$temp_file" -C /opt/tinyauth --strip-components=1
-    cd /opt/tinyauth/frontend
+    cd /opt/tinyauth/frontend || exit
     $STD bun install
     $STD bun run build
     mv dist /opt/tinyauth/internal/assets/
-    cd /opt/tinyauth
+    cd /opt/tinyauth || exit
     $STD go mod download
     CGO_ENABLED=0 go build -ldflags "-s -w"
     cp /opt/.env /opt/tinyauth

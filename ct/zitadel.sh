@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 community-scripts ORG
 # Author: dave-yap (dave-yap)
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -34,7 +34,7 @@ function update_script() {
     msg_ok "Stopped $APP"
 
     msg_info "Updating $APP to ${RELEASE}"
-    cd /tmp
+    cd /tmp || exit
     curl -fsSL "https://github.com/zitadel/zitadel/releases/download/v$RELEASE/zitadel-linux-amd64.tar.gz" | tar -xz
     mv zitadel-linux-amd64/zitadel /usr/local/bin
     $STD zitadel setup --masterkeyFile /opt/zitadel/.masterkey --config /opt/zitadel/config.yaml --init-projections=true

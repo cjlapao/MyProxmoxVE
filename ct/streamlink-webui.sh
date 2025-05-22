@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 community-scripts ORG
 # Author: CrazyWolf13
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -32,7 +32,7 @@ function update_script() {
   RELEASE=$(curl -fsSL https://api.github.com/repos/CrazyWolf13/streamlink-webui/releases/latest | grep "tag_name" | awk '{print substr($2, 2, length($2)-3) }')
   if [[ "${RELEASE}" != "$(cat /opt/${APP}_version.txt)" ]] || [[ ! -f /opt/${APP}_version.txt ]]; then
     msg_info "Starting Update"
-    
+
     msg_info "Stopping $APP"
     systemctl stop ${APP}
     msg_ok "Stopped $APP"
@@ -48,7 +48,7 @@ function update_script() {
     $STD uv venv /opt/"${APP}"/backend/src/.venv
     source /opt/"${APP}"/backend/src/.venv/bin/activate
     $STD uv pip install -r /opt/"${APP}"/backend/src/requirements.txt --python=/opt/"${APP}"/backend/src/.venv
-    cd /opt/"${APP}"/frontend/src
+    cd /opt/"${APP}"/frontend/src || exit
     $STD yarn install
     $STD yarn build
     chmod +x /opt/"${APP}"/start.sh

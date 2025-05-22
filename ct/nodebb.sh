@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 community-scripts ORG
 # Author: MickLesk (Canbiz)
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -38,7 +38,7 @@ function update_script() {
     msg_ok "Stopped ${APP}"
 
     msg_info "Updating ${APP} to v${RELEASE}"
-    cd /opt/nodebb
+    cd /opt/nodebb || exit
     $STD ./nodebb upgrade
     echo "${RELEASE}" >/opt/${APP}_version.txt
     msg_ok "Updated ${APP} to v${RELEASE}"

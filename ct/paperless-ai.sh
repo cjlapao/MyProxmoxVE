@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 community-scripts ORG
 # Author: MickLesk (CanbiZ)
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -37,14 +37,14 @@ function update_script() {
     msg_ok "Stopped $APP"
 
     msg_info "Updating $APP to v${RELEASE}"
-    cd /opt
+    cd /opt || exit
     mv /opt/paperless-ai /opt/paperless-ai_bak
     curl -fsSL "https://github.com/clusterzx/paperless-ai/archive/refs/tags/v${RELEASE}.zip" -o $(basename "https://github.com/clusterzx/paperless-ai/archive/refs/tags/v${RELEASE}.zip")
-    unzip -q v${RELEASE}.zip
-    mv paperless-ai-${RELEASE} /opt/paperless-ai
+    unzip -q v"${RELEASE}".zip
+    mv paperless-ai-"${RELEASE}" /opt/paperless-ai
     mkdir -p /opt/paperless-ai/data
     cp -a /opt/paperless-ai_bak/data/. /opt/paperless-ai/data/
-    cd /opt/paperless-ai
+    cd /opt/paperless-ai || exit
     if [[ ! -f /etc/systemd/system/paperless-rag.service ]]; then
       cat <<EOF >/etc/systemd/system/paperless-rag.service
 [Unit]
@@ -73,7 +73,7 @@ EOF
     msg_ok "Started $APP"
 
     msg_info "Cleaning Up"
-    rm -rf /opt/v${RELEASE}.zip
+    rm -rf /opt/v"${RELEASE}".zip
     rm -rf /opt/paperless-ai_bak
     msg_ok "Cleanup Completed"
     msg_ok "Update Successful"

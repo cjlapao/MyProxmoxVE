@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 community-scripts ORG
 # Author: fabrice1236
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -20,26 +20,26 @@ color
 catch_errors
 
 function update_script() {
-    header_info
-    check_container_storage
-    check_container_resources
-    msg_info "Updating ${APP} LXC"
+  header_info
+  check_container_storage
+  check_container_resources
+  msg_info "Updating ${APP} LXC"
 
-    if command -v ghost &>/dev/null; then
-        current_version=$(ghost version | grep 'Ghost-CLI version' | awk '{print $3}')
-        latest_version=$(npm show ghost-cli version)
-        if [ "$current_version" != "$latest_version" ]; then
-            msg_info "Updating ${APP} from version v${current_version} to v${latest_version}"
-            $STD npm install -g ghost-cli@latest
-            msg_ok "Updated Successfully"
-        else
-            msg_ok "${APP} is already at v${current_version}"
-        fi
+  if command -v ghost &>/dev/null; then
+    current_version=$(ghost version | grep 'Ghost-CLI version' | awk '{print $3}')
+    latest_version=$(npm show ghost-cli version)
+    if [ "$current_version" != "$latest_version" ]; then
+      msg_info "Updating ${APP} from version v${current_version} to v${latest_version}"
+      $STD npm install -g ghost-cli@latest
+      msg_ok "Updated Successfully"
     else
-        msg_error "No ${APP} Installation Found!"
-        exit
+      msg_ok "${APP} is already at v${current_version}"
     fi
+  else
+    msg_error "No ${APP} Installation Found!"
     exit
+  fi
+  exit
 }
 
 start

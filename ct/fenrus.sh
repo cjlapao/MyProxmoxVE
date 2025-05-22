@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 tteck
 # Author: tteck (tteckster) | Co-Author: Scorpoon
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -30,12 +30,12 @@ function update_script() {
   msg_error "Currently we don't provide an update function for this ${APP}."
   exit
   msg_info "Updating ${APP}"
-  systemctl stop ${APP}
+  systemctl stop "${APP}"
   git clone https://github.com/revenz/Fenrus.git
-  cd Fenrus
+  cd Fenrus || exit
   gitVersionNumber=$(git rev-parse HEAD)
 
-  if [[ "${gitVersionNumber}" != "$(cat /opt/${APP}_version.txt)" ]] || [[ ! -f /opt/${APP}_version.txt ]]; then
+  if [[ "${gitVersionNumber}" != "$(cat /opt/"${APP}"_version.txt)" ]] || [[ ! -f /opt/${APP}_version.txt ]]; then
     mkdir /opt/fenrus-data-backup
     cp -r "/opt/${APP}/data/" /opt/fenrus-data-backup/data
     if [[ ! -d /opt/fenrus-data-backup/data ]]; then
@@ -55,7 +55,7 @@ function update_script() {
   cd ..
   rm -r Fenrus/
 
-  systemctl start ${APP}
+  systemctl start "${APP}"
   exit
 }
 

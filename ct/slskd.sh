@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -s https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
+source <(curl -s https://raw.githubusercontent.com/cjlapao/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 community-scripts ORG
 # Author: vhsdream
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -37,27 +37,27 @@ function update_script() {
 
     msg_info "Updating $APP to v${RELEASE}"
     tmp_file=$(mktemp)
-    curl -fsSL "https://github.com/slskd/slskd/releases/download/${RELEASE}/slskd-${RELEASE}-linux-x64.zip" -o $tmp_file
-    unzip -q -oj $tmp_file slskd -d /opt/${APP}
+    curl -fsSL "https://github.com/slskd/slskd/releases/download/${RELEASE}/slskd-${RELEASE}-linux-x64.zip" -o "$tmp_file"
+    unzip -q -oj "$tmp_file" slskd -d /opt/${APP}
     echo "${RELEASE}" >/opt/${APP}_version.txt
     msg_ok "Updated $APP to v${RELEASE}"
 
     msg_info "Starting $APP"
     systemctl start slskd
     msg_ok "Started $APP"
-    rm -rf $tmp_file
+    rm -rf "$tmp_file"
   else
     msg_ok "No ${APP} update required. ${APP} is already at v${RELEASE}"
   fi
   msg_info "Updating Soularr"
   cp /opt/soularr/config.ini /opt/config.ini.bak
   cp /opt/soularr/run.sh /opt/run.sh.bak
-  cd /tmp
+  cd /tmp || exit
   rm -rf /opt/soularr
   curl -fsSL -o main.zip https://github.com/mrusse/soularr/archive/refs/heads/main.zip
   unzip -q main.zip
   mv soularr-main /opt/soularr
-  cd /opt/soularr
+  cd /opt/soularr || exit
   $STD pip install -r requirements.txt
   mv /opt/config.ini.bak /opt/soularr/config.ini
   mv /opt/run.sh.bak /opt/soularr/run.sh

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 tteck
 # Author: MickLesk (Canbiz)
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -35,12 +35,12 @@ function update_script() {
     msg_ok "Stopped ${APP} Service"
 
     msg_info "Updating ${APP} to ${RELEASE}"
-    cd /opt
+    cd /opt || exit
     rm -rf spoolman_bak
     mv spoolman spoolman_bak
     curl -fsSL "https://github.com/Donkie/Spoolman/releases/download/${RELEASE}/spoolman.zip" -o $(basename "https://github.com/Donkie/Spoolman/releases/download/${RELEASE}/spoolman.zip")
     unzip -q spoolman.zip -d spoolman
-    cd spoolman
+    cd spoolman || exit
     $STD pip3 install -r requirements.txt
     curl -fsSL "https://raw.githubusercontent.com/Donkie/Spoolman/master/.env.example" -o ".env"
     echo "${RELEASE}" >/opt/${APP}_version.txt

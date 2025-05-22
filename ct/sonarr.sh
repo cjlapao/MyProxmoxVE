@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 tteck
 # Author: tteck (tteckster)
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -20,23 +20,23 @@ color
 catch_errors
 
 function update_script() {
-    header_info
-    check_container_storage
-    check_container_resources
-    if [[ ! -d /var/lib/sonarr/ ]]; then
-        msg_error "No ${APP} Installation Found!"
-        exit
-    fi
-    msg_info "Updating $APP v4"
-    systemctl stop sonarr.service
-    curl -fsSL "https://services.sonarr.tv/v1/download/main/latest?version=4&os=linux&arch=x64" -o "SonarrV4.tar.gz"
-    tar -xzf SonarrV4.tar.gz
-    rm -rf /opt/Sonarr
-    mv Sonarr /opt
-    rm -rf SonarrV4.tar.gz
-    systemctl start sonarr.service
-    msg_ok "Updated $APP v4"
+  header_info
+  check_container_storage
+  check_container_resources
+  if [[ ! -d /var/lib/sonarr/ ]]; then
+    msg_error "No ${APP} Installation Found!"
     exit
+  fi
+  msg_info "Updating $APP v4"
+  systemctl stop sonarr.service
+  curl -fsSL "https://services.sonarr.tv/v1/download/main/latest?version=4&os=linux&arch=x64" -o "SonarrV4.tar.gz"
+  tar -xzf SonarrV4.tar.gz
+  rm -rf /opt/Sonarr
+  mv Sonarr /opt
+  rm -rf SonarrV4.tar.gz
+  systemctl start sonarr.service
+  msg_ok "Updated $APP v4"
+  exit
 }
 
 start

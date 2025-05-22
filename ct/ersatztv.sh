@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 tteck
 # Author: MickLesk (Canbiz)
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -39,7 +39,7 @@ function update_script() {
     temp_file=$(mktemp)
     curl -fsSL "https://github.com/ErsatzTV/ErsatzTV/releases/download/${RELEASE}/ErsatzTV-${RELEASE}-linux-x64.tar.gz" -o "$temp_file"
     tar -xzf "$temp_file"
-    mv ErsatzTV-${RELEASE}-linux-x64 /opt/ErsatzTV
+    mv ErsatzTV-"${RELEASE}"-linux-x64 /opt/ErsatzTV
     cp -R ErsatzTV-backup/* /opt/ErsatzTV/
     rm -rf ErsatzTV-backup
     echo "${RELEASE}" >/opt/${APP}_version.txt
@@ -50,7 +50,7 @@ function update_script() {
     msg_ok "Started ErsatzTV"
 
     msg_info "Cleaning Up"
-    rm -f ${temp_file}
+    rm -f "${temp_file}"
     msg_ok "Cleaned"
     msg_ok "Updated Successfully"
   else

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 community-scripts ORG
 # Author: kristocopani
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -34,7 +34,7 @@ function update_script() {
     msg_ok "Stopped Service"
 
     msg_info "Updating ${APP} to v${RELEASE}"
-    cd /opt
+    cd /opt || exit
     curl -fsSL "https://github.com/inspircd/inspircd/releases/download/v${RELEASE}/inspircd_${RELEASE}.deb12u1_amd64.deb" -o $(basename "https://github.com/inspircd/inspircd/releases/download/v${RELEASE}/inspircd_${RELEASE}.deb12u1_amd64.deb")
     $STD apt-get install "./inspircd_${RELEASE}.deb12u1_amd64.deb" -y
     echo "${RELEASE}" >"/opt/${APP}_version.txt"
@@ -45,7 +45,7 @@ function update_script() {
     msg_ok "Started Service"
 
     msg_info "Cleaning up"
-    rm -rf /opt/inspircd_${RELEASE}.deb12u1_amd64.deb
+    rm -rf /opt/inspircd_"${RELEASE}".deb12u1_amd64.deb
     msg_ok "Cleaned"
     msg_ok "Updated Successfully"
   else

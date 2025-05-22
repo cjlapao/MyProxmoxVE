@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 tteck
 # Author: tteck (tteckster)
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -35,16 +35,16 @@ function update_script() {
   fi
   RELEASE=$(curl -fsSL https://api.github.com/repos/Stirling-Tools/Stirling-PDF/releases/latest | grep "tag_name" | awk '{print substr($2, 3, length($2)-4) }')
   curl -fsSL "https://github.com/Stirling-Tools/Stirling-PDF/archive/refs/tags/v$RELEASE.tar.gz" -o $(basename "https://github.com/Stirling-Tools/Stirling-PDF/archive/refs/tags/v$RELEASE.tar.gz")
-  tar -xzf v$RELEASE.tar.gz
-  cd Stirling-PDF-$RELEASE
+  tar -xzf v"$RELEASE".tar.gz
+  cd Stirling-PDF-$RELEASE || exit
   chmod +x ./gradlew
   $STD ./gradlew build
   rm -rf /opt/Stirling-PDF/Stirling-PDF-*.jar
   cp -r ./build/libs/Stirling-PDF-*.jar /opt/Stirling-PDF/
   cp -r scripts /opt/Stirling-PDF/
-  cd ~
-  rm -rf Stirling-PDF-$RELEASE v$RELEASE.tar.gz
-  ln -sf /opt/Stirling-PDF/Stirling-PDF-$RELEASE.jar /opt/Stirling-PDF/Stirling-PDF.jar
+  cd ~ || exit
+  rm -rf Stirling-PDF-"$RELEASE" v"$RELEASE".tar.gz
+  ln -sf /opt/Stirling-PDF/Stirling-PDF-"$RELEASE".jar /opt/Stirling-PDF/Stirling-PDF.jar
   systemctl start stirlingpdf
   msg_ok "Updated ${APP} to v$RELEASE"
   exit

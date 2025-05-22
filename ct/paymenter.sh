@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 community-scripts ORG
 # Author: Nícolas Pastorello (opastorello)
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -47,7 +47,7 @@ function update_script() {
   if [[ ! -f /opt/${APP}_version.txt ]] || [[ "${RELEASE}" != "$(cat /opt/${APP}_version.txt)" ]]; then
     msg_info "Updating ${APP} to ${RELEASE}"
     echo "${RELEASE}" >/opt/${APP}_version.txt
-    cd /opt/paymenter
+    cd /opt/paymenter || exit
     $STD php artisan p:upgrade --no-interaction
     msg_ok "Updated Successfully"
   else

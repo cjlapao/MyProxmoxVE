@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 tteck
 # Author: tteck (tteckster)
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -31,10 +31,10 @@ function update_script() {
   msg_info "Updating Mafl to v${RELEASE} (Patience)"
   systemctl stop mafl
   curl -fsSL "https://github.com/hywax/mafl/archive/refs/tags/v${RELEASE}.tar.gz" -o $(basename "https://github.com/hywax/mafl/archive/refs/tags/v${RELEASE}.tar.gz")
-  tar -xzf v${RELEASE}.tar.gz
-  cp -r mafl-${RELEASE}/* /opt/mafl/
-  rm -rf mafl-${RELEASE}
-  cd /opt/mafl
+  tar -xzf v"${RELEASE}".tar.gz
+  cp -r mafl-"${RELEASE}"/* /opt/mafl/
+  rm -rf mafl-"${RELEASE}"
+  cd /opt/mafl || exit
   yarn install
   yarn build
   systemctl start mafl

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 community-scripts ORG
 # Author: Slaviša Arežina (tremor021)
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -20,48 +20,48 @@ color
 catch_errors
 
 function update_script() {
-    header_info
-    check_container_storage
-    check_container_resources
+  header_info
+  check_container_storage
+  check_container_resources
 
-    if [[ ! -d "/opt/revealjs" ]]; then
-        msg_error "No ${APP} Installation Found!"
-        exit
-    fi
-    RELEASE=$(curl -fsSL https://api.github.com/repos/hakimel/reveal.js/releases/latest | grep "tag_name" | awk '{print substr($2, 2, length($2)-3) }')
-    if [[ "${RELEASE}" != "$(cat /opt/${APP}_version.txt)" ]] || [[ ! -f /opt/${APP}_version.txt ]]; then
-        msg_info "Stopping $APP"
-        systemctl stop revealjs
-        msg_ok "Stopped $APP"
-
-        msg_info "Updating $APP to ${RELEASE}"
-        temp_file=$(mktemp)
-curl -fsSL "https://github.com/hakimel/reveal.js/archive/refs/tags/${RELEASE}.tar.gz" -o "$temp_file"
-        tar zxf $temp_file
-        rm -rf /opt/revealjs/node_modules/*
-        cp /opt/revealjs/index.html /opt
-        cp -rf reveal.js-${RELEASE}/* /opt/revealjs
-        cd /opt/revealjs
-        $STD npm install
-        cp -f /opt/index.html /opt/revealjs
-        sed -i '25s/localhost/0.0.0.0/g' /opt/revealjs/gulpfile.js
-        echo "${RELEASE}" >/opt/${APP}_version.txt
-        msg_ok "Updated $APP to ${RELEASE}"
-
-        msg_info "Starting $APP"
-        systemctl start revealjs
-        msg_ok "Started $APP"
-
-        msg_info "Cleaning Up"
-        rm -f $temp_file
-        rm -rf ~/reveal.js-${RELEASE}
-        msg_ok "Cleanup Completed"
-
-        msg_ok "Update Successful"
-    else
-        msg_ok "No update required. ${APP} is already at ${RELEASE}"
-    fi
+  if [[ ! -d "/opt/revealjs" ]]; then
+    msg_error "No ${APP} Installation Found!"
     exit
+  fi
+  RELEASE=$(curl -fsSL https://api.github.com/repos/hakimel/reveal.js/releases/latest | grep "tag_name" | awk '{print substr($2, 2, length($2)-3) }')
+  if [[ "${RELEASE}" != "$(cat /opt/${APP}_version.txt)" ]] || [[ ! -f /opt/${APP}_version.txt ]]; then
+    msg_info "Stopping $APP"
+    systemctl stop revealjs
+    msg_ok "Stopped $APP"
+
+    msg_info "Updating $APP to ${RELEASE}"
+    temp_file=$(mktemp)
+    curl -fsSL "https://github.com/hakimel/reveal.js/archive/refs/tags/${RELEASE}.tar.gz" -o "$temp_file"
+    tar zxf "$temp_file"
+    rm -rf /opt/revealjs/node_modules/*
+    cp /opt/revealjs/index.html /opt
+    cp -rf reveal.js-"${RELEASE}"/* /opt/revealjs
+    cd /opt/revealjs || exit
+    $STD npm install
+    cp -f /opt/index.html /opt/revealjs
+    sed -i '25s/localhost/0.0.0.0/g' /opt/revealjs/gulpfile.js
+    echo "${RELEASE}" >/opt/${APP}_version.txt
+    msg_ok "Updated $APP to ${RELEASE}"
+
+    msg_info "Starting $APP"
+    systemctl start revealjs
+    msg_ok "Started $APP"
+
+    msg_info "Cleaning Up"
+    rm -f "$temp_file"
+    rm -rf ~/reveal.js-"${RELEASE}"
+    msg_ok "Cleanup Completed"
+
+    msg_ok "Update Successful"
+  else
+    msg_ok "No update required. ${APP} is already at ${RELEASE}"
+  fi
+  exit
 }
 
 start

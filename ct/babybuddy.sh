@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 community-scripts ORG
 # Author: MickLesk (CanbiZ)
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -45,14 +45,14 @@ function update_script() {
     msg_info "Updating ${APP} to v${RELEASE}"
     temp_file=$(mktemp)
     curl -fsSL "https://github.com/babybuddy/babybuddy/archive/refs/tags/v${RELEASE}.tar.gz" -o "$temp_file"
-    cd /opt/babybuddy
+    cd /opt/babybuddy || exit
     tar zxf "$temp_file" --strip-components=1 -C /opt/babybuddy
     mv /tmp/production.py.bak babybuddy/settings/production.py
-    cd /opt/babybuddy
+    cd /opt/babybuddy || exit
     source .venv/bin/activate
     $STD uv pip install -r requirements.txt
     $STD python manage.py migrate
-    echo "${RELEASE}" >/opt/${APP}_version.txt
+    echo "${RELEASE}" >/opt/"${APP}"_version.txt
     msg_ok "Updated ${APP} to v${RELEASE}"
 
     msg_info "Fixing permissions"

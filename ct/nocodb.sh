@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 tteck
 # Author: tteck (tteckster)
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -20,22 +20,22 @@ color
 catch_errors
 
 function update_script() {
-    header_info
-    check_container_storage
-    check_container_resources
-    if [[ ! -f /etc/systemd/system/nocodb.service ]]; then
-        msg_error "No ${APP} Installation Found!"
-        exit
-    fi
-    msg_info "Updating ${APP}"
-    systemctl stop nocodb.service
-    cd /opt/nocodb
-    rm -rf nocodb
-    curl -fsSL http://get.nocodb.com/linux-x64 -o nocodb -L
-    chmod +x nocodb
-    systemctl start nocodb.service
-    msg_ok "Updated Successfully"
+  header_info
+  check_container_storage
+  check_container_resources
+  if [[ ! -f /etc/systemd/system/nocodb.service ]]; then
+    msg_error "No ${APP} Installation Found!"
     exit
+  fi
+  msg_info "Updating ${APP}"
+  systemctl stop nocodb.service
+  cd /opt/nocodb || exit
+  rm -rf nocodb
+  curl -fsSL http://get.nocodb.com/linux-x64 -o nocodb -L
+  chmod +x nocodb
+  systemctl start nocodb.service
+  msg_ok "Updated Successfully"
+  exit
 }
 
 start

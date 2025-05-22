@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 community-scripts ORG
 # Author: MickLesk (CanbiZ)
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -36,11 +36,11 @@ function update_script() {
     msg_info "Updating ${APP} to ${RELEASE}"
     cp /opt/documenso/.env /opt/
     rm -rf /opt/documenso
-    cd /opt
-    curl -fsSL "https://github.com/documenso/documenso/archive/refs/tags/v${RELEASE}.zip" -o v${RELEASE}.zip
-    unzip -q v${RELEASE}.zip
-    mv documenso-${RELEASE} /opt/documenso
-    cd /opt/documenso
+    cd /opt || exit
+    curl -fsSL "https://github.com/documenso/documenso/archive/refs/tags/v${RELEASE}.zip" -o v"${RELEASE}".zip
+    unzip -q v"${RELEASE}".zip
+    mv documenso-"${RELEASE}" /opt/documenso
+    cd /opt/documenso || exit
     mv /opt/.env /opt/documenso/.env
     export TURBO_CACHE=1
     export NEXT_TELEMETRY_DISABLED=1
@@ -58,7 +58,7 @@ function update_script() {
     msg_ok "Started ${APP}"
 
     msg_info "Cleaning Up"
-    rm -rf /opt/v${RELEASE}.zip
+    rm -rf /opt/v"${RELEASE}".zip
     msg_ok "Cleaned"
     msg_ok "Updated Successfully"
   else

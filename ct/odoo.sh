@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 community-scripts ORG
 # Author: MickLesk (CanbiZ)
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -41,7 +41,7 @@ function update_script() {
     msg_ok "Stopped ${APP}"
 
     msg_info "Updating ${APP} to ${LATEST_VERSION}"
-    curl -fsSL https://nightly.odoo.com/${RELEASE}/nightly/deb/odoo_${RELEASE}.latest_all.deb -o /opt/odoo.deb
+    curl -fsSL https://nightly.odoo.com/"${RELEASE}"/nightly/deb/odoo_"${RELEASE}".latest_all.deb -o /opt/odoo.deb
     $STD apt install -y /opt/odoo.deb
     echo "$LATEST_VERSION" >/opt/${APP}_version.txt
     msg_ok "Updated ${APP} to ${LATEST_VERSION}"

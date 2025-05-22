@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 tteck
 # Author: MickLesk (Canbiz)
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -46,13 +46,13 @@ function update_script() {
     msg_ok "Stopped ${APP} Service"
 
     msg_info "Updating ${APP} to v${RELEASE}"
-    cd /opt
+    cd /opt || exit
     cp /opt/tianji/src/server/.env /opt/.env
     mv /opt/tianji /opt/tianji_bak
     curl -fsSL "https://github.com/msgbyte/tianji/archive/refs/tags/v${RELEASE}.zip" -o $(basename "https://github.com/msgbyte/tianji/archive/refs/tags/v${RELEASE}.zip")
-    unzip -q v${RELEASE}.zip
-    mv tianji-${RELEASE} /opt/tianji
-    cd tianji
+    unzip -q v"${RELEASE}".zip
+    mv tianji-"${RELEASE}" /opt/tianji
+    cd tianji || exit
     export NODE_OPTIONS="--max_old_space_size=4096"
     $STD pnpm install --filter @tianji/client... --config.dedupe-peer-dependents=false --frozen-lockfile
     $STD pnpm build:static
@@ -61,7 +61,7 @@ function update_script() {
     cp -r ./geo ./src/server/public
     $STD pnpm build:server
     mv /opt/.env /opt/tianji/src/server/.env
-    cd src/server
+    cd src/server || exit
     $STD pnpm db:migrate:apply
     echo "${RELEASE}" >/opt/${APP}_version.txt
     msg_ok "Updated ${APP} to v${RELEASE}"
@@ -71,7 +71,7 @@ function update_script() {
     msg_ok "Started ${APP}"
 
     msg_info "Cleaning up"
-    rm -R /opt/v${RELEASE}.zip
+    rm -R /opt/v"${RELEASE}".zip
     rm -rf /opt/tianji_bak
     rm -rf /opt/tianji/src/client
     rm -rf /opt/tianji/website

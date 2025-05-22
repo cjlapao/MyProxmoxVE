@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 tteck
 # Author: tteck (tteckster)
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -45,14 +45,14 @@ function update_script() {
     msg_ok "Backup Created"
 
     msg_info "Updating ${APP} to v${RELEASE}"
-    cd /opt
+    cd /opt || exit
     curl -fsSL "https://github.com/Koenkk/zigbee2mqtt/archive/refs/tags/${RELEASE}.zip" -o $(basename "https://github.com/Koenkk/zigbee2mqtt/archive/refs/tags/${RELEASE}.zip")
-    unzip -q ${RELEASE}.zip
+    unzip -q "${RELEASE}".zip
     rm -rf /opt/zigbee2mqtt
-    mv zigbee2mqtt-${RELEASE} /opt/zigbee2mqtt
+    mv zigbee2mqtt-"${RELEASE}" /opt/zigbee2mqtt
     rm -rf /opt/zigbee2mqtt/data
     mv /opt/z2m_backup/data /opt/zigbee2mqtt
-    cd /opt/zigbee2mqtt
+    cd /opt/zigbee2mqtt || exit
     $STD pnpm install --frozen-lockfile
     $STD pnpm build
     msg_ok "Updated Zigbee2MQTT"
@@ -63,7 +63,7 @@ function update_script() {
 
     msg_info "Cleaning up"
     rm -rf /opt/z2m_backup
-    rm -rf /opt/${RELEASE}.zip
+    rm -rf /opt/"${RELEASE}".zip
     msg_ok "Cleaned up"
     echo "${RELEASE}" >/opt/${APP}_version.txt
   else

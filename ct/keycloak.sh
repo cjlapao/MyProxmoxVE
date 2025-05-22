@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 tteck
 # Author: tteck (tteckster)
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -35,17 +35,17 @@ function update_script() {
 
   RELEASE=$(curl -fsSL https://api.github.com/repos/keycloak/keycloak/releases/latest | grep "tag_name" | awk '{print substr($2, 2, length($2)-3) }')
   msg_info "Updating Keycloak to v$RELEASE"
-  cd /opt
+  cd /opt || exit
   curl -fsSL "https://github.com/keycloak/keycloak/releases/download/$RELEASE/keycloak-$RELEASE.tar.gz" -o $(basename "https://github.com/keycloak/keycloak/releases/download/$RELEASE/keycloak-$RELEASE.tar.gz")
   mv keycloak keycloak.old
-  tar -xzf keycloak-$RELEASE.tar.gz
-  cp -r keycloak.old/conf keycloak-$RELEASE
-  cp -r keycloak.old/providers keycloak-$RELEASE
-  cp -r keycloak.old/themes keycloak-$RELEASE
-  mv keycloak-$RELEASE keycloak
+  tar -xzf keycloak-"$RELEASE".tar.gz
+  cp -r keycloak.old/conf keycloak-"$RELEASE"
+  cp -r keycloak.old/providers keycloak-"$RELEASE"
+  cp -r keycloak.old/themes keycloak-"$RELEASE"
+  mv keycloak-"$RELEASE" keycloak
 
   msg_info "Delete temporary installation files"
-  rm keycloak-$RELEASE.tar.gz
+  rm keycloak-"$RELEASE".tar.gz
   rm -rf keycloak.old
 
   msg_info "Restating Keycloak"

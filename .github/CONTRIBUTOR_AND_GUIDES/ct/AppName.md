@@ -40,7 +40,7 @@
 - Import the build.func file.
 - When developing your own script, change the URL to your own repository.
 
-> [!IMPORTANT] 
+> [!IMPORTANT]
 > You also need to change all apperances of this URL in `misc/build.func` and `misc/install.func`
 
 Example for development:
@@ -52,7 +52,7 @@ source <(curl -s https://raw.githubusercontent.com/[USER]/[REPO]/refs/heads/[BRA
 Final script:
 
 ```bash
-source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/ProxmoxVE/main/misc/build.func)
 ```
 
 > [!CAUTION]
@@ -122,6 +122,7 @@ var_unprivileged="${var_unprivileged:-1}"
 ```bash
 header_info "$APP"
 ```
+
 - `header_info`: Generates ASCII header for APP
 
 ## 2.3 **🛠 Core functions**

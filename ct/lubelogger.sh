@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 community-scripts ORG
 # Author: kristocopani
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -35,7 +35,7 @@ function update_script() {
     msg_ok "Stopped Service"
 
     msg_info "Updating ${APP} to v${RELEASE}"
-    cd /opt
+    cd /opt || exit
     curl -fsSL "https://github.com/hargata/lubelog/releases/download/v${RELEASE}/LubeLogger_v${RELEASE_TRIMMED}_linux_x64.zip" -o $(basename "https://github.com/hargata/lubelog/releases/download/v${RELEASE}/LubeLogger_v${RELEASE_TRIMMED}_linux_x64.zip")
     mkdir -p /tmp/lubeloggerData/data
     cp /opt/lubelogger/appsettings.json /tmp/lubeloggerData/appsettings.json
@@ -50,7 +50,7 @@ function update_script() {
     [[ -e /opt/lubelogger/wwwroot/temp ]] && cp -r /opt/lubelogger/wwwroot/temp /tmp/lubeloggerData/data/
     [[ -e /opt/lubelogger/log ]] && cp -r /opt/lubelogger/log /tmp/lubeloggerData/
     rm -rf /opt/lubelogger
-    unzip -qq LubeLogger_v${RELEASE_TRIMMED}_linux_x64.zip -d lubelogger
+    unzip -qq LubeLogger_v"${RELEASE_TRIMMED}"_linux_x64.zip -d lubelogger
     chmod 700 /opt/lubelogger/CarCareTracker
     cp -rf /tmp/lubeloggerData/* /opt/lubelogger/
     echo "${RELEASE}" >"/opt/${APP}_version.txt"
@@ -61,7 +61,7 @@ function update_script() {
     msg_ok "Started Service"
 
     msg_info "Cleaning up"
-    rm -rf /opt/LubeLogger_v${RELEASE_TRIMMED}_linux_x64.zip
+    rm -rf /opt/LubeLogger_v"${RELEASE_TRIMMED}"_linux_x64.zip
     rm -rf /tmp/lubeloggerData
     msg_ok "Cleaned"
     msg_ok "Updated Successfully"

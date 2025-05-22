@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 tteck
 # Author: tteck (tteckster)
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -29,7 +29,7 @@ function update_script() {
   fi
   msg_info "Updating $APP"
   systemctl stop go2rtc
-  cd /opt/go2rtc
+  cd /opt/go2rtc || exit
   rm go2rtc_linux_amd64
   curl -fsSL "https://github.com/AlexxIT/go2rtc/releases/latest/download/go2rtc_linux_amd64" -o $(basename "https://github.com/AlexxIT/go2rtc/releases/latest/download/go2rtc_linux_amd64")
   chmod +x go2rtc_linux_amd64

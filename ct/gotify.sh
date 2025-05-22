@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 tteck
 # Author: tteck (tteckster)
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -35,7 +35,7 @@ function update_script() {
     msg_ok "Stopped ${APP}"
 
     msg_info "Updating ${APP} to ${RELEASE}"
-    cd /opt/gotify
+    cd /opt/gotify || exit
     curl -fsSL "https://github.com/gotify/server/releases/download/v${RELEASE}/gotify-linux-amd64.zip" -o $(basename "https://github.com/gotify/server/releases/download/v${RELEASE}/gotify-linux-amd64.zip")
     unzip -oq gotify-linux-amd64.zip
     rm -rf gotify-linux-amd64.zip

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 community-scripts ORG
 # Author: MrYadro
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -20,22 +20,22 @@ color
 catch_errors
 
 function update_script() {
-    header_info
-    check_container_storage
-    check_container_resources
-    if [[ ! -f /root/.config/recyclarr/recyclarr.yml ]]; then
-        msg_error "No ${APP} Installation Found!"
-        exit
-    fi
-
-    msg_info "Updating ${APP}"
-    curl -fsSL "$(curl -fsSL https://api.github.com/repos/recyclarr/recyclarr/releases/latest | grep download | grep linux-x64 | cut -d\" -f4)" -o $(basename "$(curl -fsSL https://api.github.com/repos/recyclarr/recyclarr/releases/latest | grep download | grep linux-x64 | cut -d\" -f4)")
-    tar -C /usr/local/bin -xJf recyclarr*.tar.xz
-    rm -rf recyclarr*.tar.xz
-    msg_ok "Updated ${APP}"
-
-    msg_ok "Updated Successfully"
+  header_info
+  check_container_storage
+  check_container_resources
+  if [[ ! -f /root/.config/recyclarr/recyclarr.yml ]]; then
+    msg_error "No ${APP} Installation Found!"
     exit
+  fi
+
+  msg_info "Updating ${APP}"
+  curl -fsSL "$(curl -fsSL https://api.github.com/repos/recyclarr/recyclarr/releases/latest | grep download | grep linux-x64 | cut -d\" -f4)" -o $(basename "$(curl -fsSL https://api.github.com/repos/recyclarr/recyclarr/releases/latest | grep download | grep linux-x64 | cut -d\" -f4)")
+  tar -C /usr/local/bin -xJf recyclarr*.tar.xz
+  rm -rf recyclarr*.tar.xz
+  msg_ok "Updated ${APP}"
+
+  msg_ok "Updated Successfully"
+  exit
 }
 
 start

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 community-scripts ORG
 # Author: MickLesk (Canbiz)
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -34,11 +34,11 @@ function update_script() {
     msg_ok "Stopped ${APP}"
 
     msg_info "Updating ${APP} to ${RELEASE}"
-    cd /opt
+    cd /opt || exit
     rm -rf /opt/vikunja/vikunja
     curl -fsSL "https://dl.vikunja.io/vikunja/$RELEASE/vikunja-$RELEASE-amd64.deb" -o $(basename "https://dl.vikunja.io/vikunja/$RELEASE/vikunja-$RELEASE-amd64.deb")
     export DEBIAN_FRONTEND=noninteractive
-    $STD dpkg -i vikunja-$RELEASE-amd64.deb
+    $STD dpkg -i vikunja-"$RELEASE"-amd64.deb
     echo "${RELEASE}" >/opt/${APP}_version.txt
     msg_ok "Updated ${APP}"
 
@@ -47,7 +47,7 @@ function update_script() {
     msg_ok "Started ${APP}"
 
     msg_info "Cleaning Up"
-    rm -rf /opt/vikunja-$RELEASE-amd64.deb
+    rm -rf /opt/vikunja-"$RELEASE"-amd64.deb
     msg_ok "Cleaned"
     msg_ok "Updated Successfully"
   else

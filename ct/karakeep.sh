@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 tteck
 # Author: MickLesk (Canbiz) & vhsdream
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -43,7 +43,7 @@ function update_script() {
     if [[ "${PREV_RELEASE}" < 0.23.0 ]]; then
       $STD apt-get install -y graphicsmagick ghostscript
     fi
-    cd /opt
+    cd /opt || exit
     if [[ -f /opt/karakeep/.env ]] && [[ ! -f /etc/karakeep/karakeep.env ]]; then
       mkdir -p /etc/karakeep
       mv /opt/karakeep/.env /etc/karakeep/karakeep.env
@@ -52,19 +52,19 @@ function update_script() {
     curl -fsSL "https://github.com/karakeep-app/karakeep/archive/refs/tags/v${RELEASE}.zip" -o "v${RELEASE}.zip"
     unzip -q "v${RELEASE}.zip"
     mv karakeep-"${RELEASE}" /opt/karakeep
-    cd /opt/karakeep/apps/web
+    cd /opt/karakeep/apps/web || exit
     $STD pnpm install --frozen-lockfile
     $STD pnpm build
-    cd /opt/karakeep/apps/workers
+    cd /opt/karakeep/apps/workers || exit
     $STD pnpm install --frozen-lockfile
-    cd /opt/karakeep/apps/cli
+    cd /opt/karakeep/apps/cli || exit
     $STD pnpm install --frozen-lockfile
     $STD pnpm build
-    cd /opt/karakeep/apps/mcp
+    cd /opt/karakeep/apps/mcp || exit
     $STD pnpm install --frozen-lockfile
     $STD pnpm build
     export DATA_DIR=/opt/karakeep_data
-    cd /opt/karakeep/packages/db
+    cd /opt/karakeep/packages/db || exit
     $STD pnpm migrate
     sed -i "s/SERVER_VERSION=${PREV_RELEASE}/SERVER_VERSION=${RELEASE}/" /etc/karakeep/karakeep.env
     msg_ok "Updated ${APP} to v${RELEASE}"

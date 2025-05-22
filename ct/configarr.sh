@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 community-scripts ORG
 # Author: finkerle
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -39,7 +39,7 @@ function update_script() {
     rm -rf /opt/configarr
     fetch_and_deploy_gh_release "raydak-labs/configarr"
     mv /opt/backup/* /opt/configarr/
-    cd /opt/configarr
+    cd /opt/configarr || exit
     $STD pnpm install
     $STD pnpm run build
     msg_ok "Updated $APP to v${RELEASE}"

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 community-scripts ORG
 # Author: tremor021
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -20,37 +20,37 @@ color
 catch_errors
 
 function update_script() {
-    header_info
-    check_container_storage
-    check_container_resources
-    if [[ ! -f /usr/bin/duplicati-server ]]; then
-        msg_error "No ${APP} Installation Found!"
-        exit
-    fi
-    RELEASE=$(curl -fsSL https://api.github.com/repos/duplicati/duplicati/releases/latest | grep "tag_name" | awk '{print substr($2, 3, length($2)-4)}')
-    if [[ "${RELEASE}" != "$(cat /opt/${APP}_version.txt)" ]] || [[ ! -f /opt/${APP}_version.txt ]]; then
-        msg_info "Stopping $APP"
-        systemctl stop duplicati
-        msg_ok "Stopped $APP"
-        msg_info "Updating $APP to v${RELEASE}"
-        curl -fsSL "https://github.com/duplicati/duplicati/releases/download/v${RELEASE}/duplicati-${RELEASE}-linux-x64-gui.deb" -o $(basename "https://github.com/duplicati/duplicati/releases/download/v${RELEASE}/duplicati-${RELEASE}-linux-x64-gui.deb")
-        $STD dpkg -i duplicati-${RELEASE}-linux-x64-gui.deb
-        echo "${RELEASE}" >/opt/${APP}_version.txt
-        msg_ok "Updated $APP to v${RELEASE}"
-
-        msg_info "Starting $APP"
-        systemctl start duplicati
-        msg_ok "Started $APP"
-
-        msg_info "Cleaning Up"
-        rm -rf ~/duplicati-${RELEASE}-linux-x64-gui.deb
-        msg_ok "Cleanup Completed"
-
-        msg_ok "Update Successful"
-    else
-        msg_ok "No update required. ${APP} is already at v${RELEASE}"
-    fi
+  header_info
+  check_container_storage
+  check_container_resources
+  if [[ ! -f /usr/bin/duplicati-server ]]; then
+    msg_error "No ${APP} Installation Found!"
     exit
+  fi
+  RELEASE=$(curl -fsSL https://api.github.com/repos/duplicati/duplicati/releases/latest | grep "tag_name" | awk '{print substr($2, 3, length($2)-4)}')
+  if [[ "${RELEASE}" != "$(cat /opt/${APP}_version.txt)" ]] || [[ ! -f /opt/${APP}_version.txt ]]; then
+    msg_info "Stopping $APP"
+    systemctl stop duplicati
+    msg_ok "Stopped $APP"
+    msg_info "Updating $APP to v${RELEASE}"
+    curl -fsSL "https://github.com/duplicati/duplicati/releases/download/v${RELEASE}/duplicati-${RELEASE}-linux-x64-gui.deb" -o $(basename "https://github.com/duplicati/duplicati/releases/download/v${RELEASE}/duplicati-${RELEASE}-linux-x64-gui.deb")
+    $STD dpkg -i duplicati-"${RELEASE}"-linux-x64-gui.deb
+    echo "${RELEASE}" >/opt/${APP}_version.txt
+    msg_ok "Updated $APP to v${RELEASE}"
+
+    msg_info "Starting $APP"
+    systemctl start duplicati
+    msg_ok "Started $APP"
+
+    msg_info "Cleaning Up"
+    rm -rf ~/duplicati-"${RELEASE}"-linux-x64-gui.deb
+    msg_ok "Cleanup Completed"
+
+    msg_ok "Update Successful"
+  else
+    msg_ok "No update required. ${APP} is already at v${RELEASE}"
+  fi
+  exit
 }
 
 start

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 community-scripts ORG
 # Author: Andy Grunwald (andygrunwald)
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -34,11 +34,11 @@ function update_script() {
     msg_ok "Stopped ${APP}"
 
     msg_info "Updating ${APP} to v${RELEASE}"
-    cd /opt
+    cd /opt || exit
     curl -fsSL "https://github.com/hansmi/prometheus-paperless-exporter/releases/download/v${RELEASE}/prometheus-paperless-exporter_${RELEASE}_linux_amd64.tar.gz" -o $(basename "https://github.com/hansmi/prometheus-paperless-exporter/releases/download/v${RELEASE}/prometheus-paperless-exporter_${RELEASE}_linux_amd64.tar.gz")
-    tar -xf prometheus-paperless-exporter_${RELEASE}_linux_amd64.tar.gz
-    cp -rf prometheus-paperless-exporter_${RELEASE}_linux_amd64/prometheus-paperless-exporter /usr/local/bin/
-    rm -rf prometheus-paperless-exporter_${RELEASE}_linux_amd64/ prometheus-paperless-exporter_${RELEASE}_linux_amd64.tar.gz
+    tar -xf prometheus-paperless-exporter_"${RELEASE}"_linux_amd64.tar.gz
+    cp -rf prometheus-paperless-exporter_"${RELEASE}"_linux_amd64/prometheus-paperless-exporter /usr/local/bin/
+    rm -rf prometheus-paperless-exporter_"${RELEASE}"_linux_amd64/ prometheus-paperless-exporter_"${RELEASE}"_linux_amd64.tar.gz
     echo "${RELEASE}" >/opt/${APP}_version.txt
     msg_ok "Updated ${APP} to v${RELEASE}"
 

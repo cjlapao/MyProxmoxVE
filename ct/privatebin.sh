@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 community-scripts ORG
 # Author: Nícolas Pastorello (opastorello)
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -33,14 +33,14 @@ function update_script() {
     echo "${RELEASE}" >/opt/${APP}_version.txt
     cp -f /opt/privatebin/cfg/conf.php /tmp/privatebin_conf.bak
     curl -fsSL "https://github.com/PrivateBin/PrivateBin/archive/refs/tags/${RELEASE}.zip" -o $(basename "https://github.com/PrivateBin/PrivateBin/archive/refs/tags/${RELEASE}.zip")
-    unzip -q ${RELEASE}.zip
+    unzip -q "${RELEASE}".zip
     rm -rf /opt/privatebin/*
-    mv PrivateBin-${RELEASE}/* /opt/privatebin/
+    mv PrivateBin-"${RELEASE}"/* /opt/privatebin/
     mv /tmp/privatebin_conf.bak /opt/privatebin/cfg/conf.php
     chown -R www-data:www-data /opt/privatebin
     chmod -R 0755 /opt/privatebin/data
     echo "${RELEASE}" >/opt/${APP}_version.txt
-    rm -rf ${RELEASE}.zip PrivateBin-${RELEASE}
+    rm -rf "${RELEASE}".zip PrivateBin-"${RELEASE}"
     systemctl reload nginx php8.2-fpm
     msg_ok "Updated ${APP} to v${RELEASE}"
   else

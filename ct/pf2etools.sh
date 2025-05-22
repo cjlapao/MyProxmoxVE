@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 community-scripts ORG
 # Author: TheRealVira
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -37,12 +37,12 @@ function update_script() {
     msg_ok "Updated System"
 
     msg_info "Updating ${APP}"
-    cd /opt
+    cd /opt || exit
     curl -fsSL "https://github.com/Pf2eToolsOrg/Pf2eTools/archive/refs/tags/${RELEASE}.zip" -o $(basename "https://github.com/Pf2eToolsOrg/Pf2eTools/archive/refs/tags/${RELEASE}.zip")
-    unzip -q ${RELEASE}.zip
+    unzip -q "${RELEASE}".zip
     rm -rf "/opt/${APP}"
-    mv ${APP}-${RELEASE:1} /opt/${APP}
-    cd /opt/Pf2eTools
+    mv ${APP}-"${RELEASE:1}" /opt/${APP}
+    cd /opt/Pf2eTools || exit
     $STD npm install
     $STD npm run build
     chown -R www-data: "/opt/${APP}"
@@ -51,7 +51,7 @@ function update_script() {
     msg_ok "Updated ${APP}"
 
     msg_info "Cleaning Up"
-    rm -rf /opt/${RELEASE}.zip
+    rm -rf /opt/"${RELEASE}".zip
     msg_ok "Cleanup Completed"
   else
     msg_ok "No update required. ${APP} is already at ${RELEASE}"

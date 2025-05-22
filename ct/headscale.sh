@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 tteck
 # Author: tteck (tteckster)
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -35,8 +35,8 @@ function update_script() {
 
     msg_info "Updating $APP to v${RELEASE}"
     curl -fsSL "https://github.com/juanfont/headscale/releases/download/v${RELEASE}/headscale_${RELEASE}_linux_amd64.deb" -o $(basename "https://github.com/juanfont/headscale/releases/download/v${RELEASE}/headscale_${RELEASE}_linux_amd64.deb")
-    dpkg -i headscale_${RELEASE}_linux_amd64.deb
-    rm headscale_${RELEASE}_linux_amd64.deb
+    dpkg -i headscale_"${RELEASE}"_linux_amd64.deb
+    rm headscale_"${RELEASE}"_linux_amd64.deb
     echo "${RELEASE}" >/opt/${APP}_version.txt
     msg_ok "Updated $APP to ${RELEASE}"
 

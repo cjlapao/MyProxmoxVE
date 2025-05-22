@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 tteck
 # Author: tteck (tteckster)
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -35,7 +35,7 @@ function update_script() {
     msg_ok "Stopped ${APP}"
 
     msg_info "Backing up conf.yml"
-    cd ~
+    cd ~ || exit
     if [[ -f /opt/dashy/public/conf.yml ]]; then
       cp -R /opt/dashy/public/conf.yml conf.yml
     else
@@ -47,14 +47,14 @@ function update_script() {
     rm -rf /opt/dashy
     mkdir -p /opt/dashy
     curl -fsSL "https://github.com/Lissy93/dashy/archive/refs/tags/${RELEASE}.tar.gz" | tar -xz -C /opt/dashy --strip-components=1
-    cd /opt/dashy
+    cd /opt/dashy || exit
     npm install
     npm run build
     echo "${RELEASE}" >/opt/${APP}_version.txt
     msg_ok "Updated ${APP} to ${RELEASE}"
 
     msg_info "Restoring conf.yml"
-    cd ~
+    cd ~ || exit
     cp -R conf.yml /opt/dashy/user-data
     msg_ok "Restored conf.yml"
 

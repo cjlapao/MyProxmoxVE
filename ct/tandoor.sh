@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 tteck
 # Author: MickLesk (Canbiz)
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -36,15 +36,15 @@ function update_script() {
   else
     msg_info "Updating ${APP} (Patience)"
     export $(cat /opt/tandoor/.env | grep "^[^#]" | xargs)
-    cd /opt/tandoor/
+    cd /opt/tandoor/ || exit
     $STD pip3 install -r requirements.txt
     $STD /usr/bin/python3 /opt/tandoor/manage.py migrate
     $STD /usr/bin/python3 /opt/tandoor/manage.py collectstatic --no-input
     $STD /usr/bin/python3 /opt/tandoor/manage.py collectstatic_js_reverse
-    cd /opt/tandoor/vue
+    cd /opt/tandoor/vue || exit
     $STD yarn install
     $STD yarn build
-    cd /opt/tandoor
+    cd /opt/tandoor || exit
     $STD python3 version.py
     systemctl restart gunicorn_tandoor
     msg_ok "Updated ${APP}"

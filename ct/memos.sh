@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 tteck
 # Author: MickLesk (Canbiz)
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -28,7 +28,7 @@ function update_script() {
     exit
   fi
   msg_info "Updating $APP (Patience)"
-  cd /opt/memos
+  cd /opt/memos || exit
   git reset --hard HEAD
   output=$(git pull --no-rebase)
   if echo "$output" | grep -q "Already up to date."; then
@@ -37,10 +37,10 @@ function update_script() {
   fi
   systemctl stop memos
   export NODE_OPTIONS="--max-old-space-size=2048"
-  cd /opt/memos/web
+  cd /opt/memos/web || exit
   $STD pnpm i --frozen-lockfile
   $STD pnpm build
-  cd /opt/memos
+  cd /opt/memos || exit
   mkdir -p /opt/memos/server/dist
   cp -r web/dist/* /opt/memos/server/dist/
   cp -r web/dist/* /opt/memos/server/router/frontend/dist/

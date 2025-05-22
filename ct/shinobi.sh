@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 tteck
 # Author: tteck (tteckster)
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -28,7 +28,7 @@ function update_script() {
     exit
   fi
   msg_info "Updating Shinobi LXC"
-  cd /opt/Shinobi
+  cd /opt/Shinobi || exit
   sh UPDATE.sh
   pm2 flush
   pm2 restart camera

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 tteck
 # Author: tteck (tteckster) | Co-Author: remz1337
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -34,7 +34,7 @@ function update_script() {
     curl -fsSL "https://api.github.com/repos/Brandawg93/PeaNUT/tarball/${RELEASE}" -o "peanut.tar.gz"
     tar -xzf peanut.tar.gz -C /opt/peanut --strip-components=1
     rm peanut.tar.gz
-    cd /opt/peanut
+    cd /opt/peanut || exit
     $STD pnpm i
     $STD pnpm run build
     cp -r .next/static .next/standalone/.next/

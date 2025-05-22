@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 community-scripts ORG
 # Author: MickLesk (CanbiZ)
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -37,11 +37,11 @@ function update_script() {
     msg_ok "${APP} Stopped"
 
     msg_info "Updating ${APP} to ${RELEASE}"
-    cd /tmp
-curl -fsSL "$DOWNLOAD_URL" -o ""nxwitness-server-$RELEASE-linux_x64.deb""
+    cd /tmp || exit
+    curl -fsSL "$DOWNLOAD_URL" -o ""nxwitness-server-"$RELEASE"-linux_x64.deb""
     export DEBIAN_FRONTEND=noninteractive
     export DEBCONF_NOWARNINGS=yes
-    $STD dpkg -i nxwitness-server-$RELEASE-linux_x64.deb
+    $STD dpkg -i nxwitness-server-"$RELEASE"-linux_x64.deb
     echo "${RELEASE}" >/opt/${APP}_version.txt
     msg_ok "Updated ${APP}"
 
@@ -50,7 +50,7 @@ curl -fsSL "$DOWNLOAD_URL" -o ""nxwitness-server-$RELEASE-linux_x64.deb""
     msg_ok "Started ${APP}"
 
     msg_info "Cleaning up"
-    rm -f /tmp/nxwitness-server-$RELEASE-linux_x64.deb
+    rm -f /tmp/nxwitness-server-"$RELEASE"-linux_x64.deb
     msg_ok "Cleaned"
 
     msg_ok "Updated Successfully"

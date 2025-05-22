@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 tteck
 # Author: MickLesk (Canbiz)
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -36,20 +36,20 @@ function update_script() {
 
     msg_info "Updating ${APP} to ${RELEASE}"
     mv /opt/adventurelog/ /opt/adventurelog-backup/
-    curl -fsSL -o /opt/v${RELEASE}.zip "https://github.com/seanmorley15/AdventureLog/archive/refs/tags/v${RELEASE}.zip"
-    unzip -q /opt/v${RELEASE}.zip -d /opt/
-    mv /opt/AdventureLog-${RELEASE} /opt/adventurelog
+    curl -fsSL -o /opt/v"${RELEASE}".zip "https://github.com/seanmorley15/AdventureLog/archive/refs/tags/v${RELEASE}.zip"
+    unzip -q /opt/v"${RELEASE}".zip -d /opt/
+    mv /opt/AdventureLog-"${RELEASE}" /opt/adventurelog
 
     mv /opt/adventurelog-backup/backend/server/.env /opt/adventurelog/backend/server/.env
     mv /opt/adventurelog-backup/backend/server/media /opt/adventurelog/backend/server/media
-    cd /opt/adventurelog/backend/server
+    cd /opt/adventurelog/backend/server || exit
     $STD pip install --upgrade pip
     $STD pip install -r requirements.txt
     $STD python3 manage.py collectstatic --noinput
     $STD python3 manage.py migrate
 
     mv /opt/adventurelog-backup/frontend/.env /opt/adventurelog/frontend/.env
-    cd /opt/adventurelog/frontend
+    cd /opt/adventurelog/frontend || exit
     $STD pnpm install
     $STD pnpm run build
     echo "${RELEASE}" >/opt/${APP}_version.txt
@@ -61,7 +61,7 @@ function update_script() {
     msg_ok "Started Services"
 
     msg_info "Cleaning Up"
-    rm -rf /opt/v${RELEASE}.zip
+    rm -rf /opt/v"${RELEASE}".zip
     rm -rf /opt/adventurelog-backup
     msg_ok "Cleaned"
     msg_ok "Updated Successfully"

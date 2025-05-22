@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 tteck
 # Author: tteck (tteckster)
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -38,7 +38,7 @@ Pin-Priority: 1001
 EOF
     apt-get update
     apt-get install -y nginx=1.26.3*
-    apt-get install -y bunkerweb=${RELEASE}
+    apt-get install -y bunkerweb="${RELEASE}"
     echo "${RELEASE}" >/opt/${APP}_version.txt
     msg_ok "Updated ${APP} to ${RELEASE}"
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 community-scripts ORG
 # Author: kristocopani
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -35,9 +35,9 @@ function update_script() {
     msg_ok "Stopped Service"
 
     msg_info "Updating ${APP} to v${RELEASE}"
-    cd /opt
+    cd /opt || exit
     curl -fsSL "https://github.com/semaphoreui/semaphore/releases/download/v${RELEASE}/semaphore_${RELEASE}_linux_amd64.deb" -o $(basename "https://github.com/semaphoreui/semaphore/releases/download/v${RELEASE}/semaphore_${RELEASE}_linux_amd64.deb")
-    $STD dpkg -i semaphore_${RELEASE}_linux_amd64.deb
+    $STD dpkg -i semaphore_"${RELEASE}"_linux_amd64.deb
     echo "${RELEASE}" >"/opt/${APP}_version.txt"
     msg_ok "Updated ${APP} to v${RELEASE}"
 
@@ -46,7 +46,7 @@ function update_script() {
     msg_ok "Started Service"
 
     msg_info "Cleaning up"
-    rm -rf /opt/semaphore_${RELEASE}_linux_amd64.deb
+    rm -rf /opt/semaphore_"${RELEASE}"_linux_amd64.deb
     msg_ok "Cleaned"
     msg_ok "Updated Successfully"
   else

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 tteck
 # Author: MickLesk (Canbiz)
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -30,14 +30,14 @@ function update_script() {
   RELEASE=$(curl -fsSL https://api.github.com/repos/ellite/Wallos/releases/latest | grep "tag_name" | awk '{print substr($2, 3, length($2)-4) }')
   if [[ ! -f /opt/${APP}_version.txt ]] || [[ "${RELEASE}" != "$(cat /opt/${APP}_version.txt)" ]]; then
     msg_info "Updating ${APP} to ${RELEASE}"
-    cd /opt
+    cd /opt || exit
     curl -fsSL "https://github.com/ellite/Wallos/archive/refs/tags/v${RELEASE}.zip" -o $(basename "https://github.com/ellite/Wallos/archive/refs/tags/v${RELEASE}.zip")
     mkdir -p /opt/logos
     mv /opt/wallos/db/wallos.db /opt/wallos.db
     mv /opt/wallos/images/uploads/logos /opt/logos/
-    unzip -q v${RELEASE}.zip
+    unzip -q v"${RELEASE}".zip
     rm -rf /opt/wallos
-    mv Wallos-${RELEASE} /opt/wallos
+    mv Wallos-"${RELEASE}" /opt/wallos
     rm -rf /opt/wallos/db/wallos.empty.db
     mv /opt/wallos.db /opt/wallos/db/wallos.db
     mv /opt/logos/* /opt/wallos/images/uploads/logos
@@ -53,7 +53,7 @@ function update_script() {
     msg_ok "Apache2 Reloaded"
 
     msg_info "Cleaning Up"
-    rm -R /opt/v${RELEASE}.zip
+    rm -R /opt/v"${RELEASE}".zip
     msg_ok "Cleaned"
     msg_ok "Updated Successfully"
   else

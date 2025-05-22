@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 tteck
 # Author: tteck (tteckster) | Co-Author: MickLesk (Canbiz)
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -35,12 +35,12 @@ function update_script() {
     msg_ok "Stopped ${APP} Service"
 
     msg_info "Updating ${APP} to ${RELEASE}"
-    cd /opt
+    cd /opt || exit
     rm -rf myspeed_bak
     mv myspeed myspeed_bak
     curl -fsSL "https://github.com/gnmyt/myspeed/releases/download/v$RELEASE/MySpeed-$RELEASE.zip" -o $(basename "https://github.com/gnmyt/myspeed/releases/download/v$RELEASE/MySpeed-$RELEASE.zip")
-    unzip -q MySpeed-$RELEASE.zip -d myspeed
-    cd myspeed
+    unzip -q MySpeed-"$RELEASE".zip -d myspeed
+    cd myspeed || exit
     $STD npm install
     echo "${RELEASE}" >/opt/${APP}_version.txt
     msg_ok "Updated ${APP} to ${RELEASE}"
@@ -50,7 +50,7 @@ function update_script() {
     msg_ok "Started ${APP} Service"
 
     msg_info "Cleaning up"
-    rm -rf MySpeed-$RELEASE.zip
+    rm -rf MySpeed-"$RELEASE".zip
     msg_ok "Cleaned"
 
     msg_ok "Updated Successfully!\n"

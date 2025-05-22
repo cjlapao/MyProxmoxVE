@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 tteck
 # Author: MickLesk (Canbiz)
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -20,19 +20,19 @@ color
 catch_errors
 
 function update_script() {
-    header_info
-    check_container_storage
-    check_container_resources
-    if [[ ! -d /root/Matterbridge ]]; then
-        msg_error "No ${APP} Installation Found!"
-        exit
-    fi
-    $STD apt-get update
-    $STD apt-get upgrade -y
-    NODE_VERSION="22"
-    NODE_MODULE="matterbridge"
-    install_node_and_modules
+  header_info
+  check_container_storage
+  check_container_resources
+  if [[ ! -d /root/Matterbridge ]]; then
+    msg_error "No ${APP} Installation Found!"
     exit
+  fi
+  $STD apt-get update
+  $STD apt-get upgrade -y
+  NODE_VERSION="22"
+  NODE_MODULE="matterbridge"
+  install_node_and_modules
+  exit
 }
 
 start

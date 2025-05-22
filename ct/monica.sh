@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 community-scripts ORG
 # Author: bvdberg01
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -34,12 +34,12 @@ function update_script() {
     msg_ok "Stopped Service"
 
     msg_info "Updating ${APP} to v${RELEASE}"
-    cd /opt
+    cd /opt || exit
     mv /opt/monica/ /opt/monica-backup
     curl -fsSL "https://github.com/monicahq/monica/releases/download/v${RELEASE}/monica-v${RELEASE}.tar.bz2" -o $(basename "https://github.com/monicahq/monica/releases/download/v${RELEASE}/monica-v${RELEASE}.tar.bz2")
     tar -xjf "monica-v${RELEASE}.tar.bz2"
     mv "/opt/monica-v${RELEASE}" /opt/monica
-    cd /opt/monica/
+    cd /opt/monica/ || exit
     cp -r /opt/monica-backup/.env /opt/monica
     cp -r /opt/monica-backup/storage/* /opt/monica/storage/
     $STD composer install --no-interaction --no-dev

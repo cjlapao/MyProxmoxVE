@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 tteck
 # Author: tteck (tteckster)
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -36,20 +36,20 @@ function update_script() {
     msg_ok "Stopped Pingvin Share"
 
     msg_info "Updating Pingvin Share to v${RELEASE}"
-    cd /opt
+    cd /opt || exit
     curl -fsSL "https://github.com/stonith404/pingvin-share/archive/refs/tags/v${RELEASE}.zip" -o $(basename "https://github.com/stonith404/pingvin-share/archive/refs/tags/v${RELEASE}.zip")
-    unzip -q v${RELEASE}.zip
-    cp -rf pingvin-share-${RELEASE}/* /opt/pingvin-share
-    cd /opt/pingvin-share
-    cd backend
+    unzip -q v"${RELEASE}".zip
+    cp -rf pingvin-share-"${RELEASE}"/* /opt/pingvin-share
+    cd /opt/pingvin-share || exit
+    cd backend || exit
     $STD npm install
     $STD npm run build
-    cd ../frontend
+    cd ../frontend || exit
     $STD npm install
     $STD npm run build
     echo "${RELEASE}" >"/opt/pingvin_version.txt"
-    rm -rf /opt/v${RELEASE}.zip
-    rm -rf /opt/pingvin-share-${RELEASE}
+    rm -rf /opt/v"${RELEASE}".zip
+    rm -rf /opt/pingvin-share-"${RELEASE}"
     msg_ok "Updated Pingvin Share to v${RELEASE}"
 
     msg_info "Starting Pingvin Share"

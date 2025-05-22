@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 tteck
 # Author: tteck (tteckster)
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -20,38 +20,38 @@ color
 catch_errors
 
 function update_script() {
-    header_info
-    check_container_storage
-    check_container_resources
-    if [[ ! -d /opt/rdtc/ ]]; then
-        msg_error "No ${APP} Installation Found!"
-        exit
-    fi
-    msg_info "Stopping ${APP}"
-    systemctl stop rdtc
-    msg_ok "Stopped ${APP}"
-
-    msg_info "Updating ${APP}"
-    if dpkg-query -W dotnet-sdk-8.0 >/dev/null 2>&1; then
-        $STD apt-get remove --purge -y dotnet-sdk-8.0
-        $STD apt-get install -y dotnet-sdk-9.0
-    fi
-    mkdir -p rdtc-backup
-    cp -R /opt/rdtc/appsettings.json rdtc-backup/
-    curl -fsSL "https://github.com/rogerfar/rdt-client/releases/latest/download/RealDebridClient.zip" -o $(basename "https://github.com/rogerfar/rdt-client/releases/latest/download/RealDebridClient.zip")
-    unzip -oqq RealDebridClient.zip -d /opt/rdtc
-    cp -R rdtc-backup/appsettings.json /opt/rdtc/
-    msg_ok "Updated ${APP}"
-
-    msg_info "Starting ${APP}"
-    systemctl start rdtc
-    msg_ok "Started ${APP}"
-
-    msg_info "Cleaning Up"
-    rm -rf rdtc-backup RealDebridClient.zip
-    msg_ok "Cleaned"
-    msg_ok "Updated Successfully"
+  header_info
+  check_container_storage
+  check_container_resources
+  if [[ ! -d /opt/rdtc/ ]]; then
+    msg_error "No ${APP} Installation Found!"
     exit
+  fi
+  msg_info "Stopping ${APP}"
+  systemctl stop rdtc
+  msg_ok "Stopped ${APP}"
+
+  msg_info "Updating ${APP}"
+  if dpkg-query -W dotnet-sdk-8.0 >/dev/null 2>&1; then
+    $STD apt-get remove --purge -y dotnet-sdk-8.0
+    $STD apt-get install -y dotnet-sdk-9.0
+  fi
+  mkdir -p rdtc-backup
+  cp -R /opt/rdtc/appsettings.json rdtc-backup/
+  curl -fsSL "https://github.com/rogerfar/rdt-client/releases/latest/download/RealDebridClient.zip" -o $(basename "https://github.com/rogerfar/rdt-client/releases/latest/download/RealDebridClient.zip")
+  unzip -oqq RealDebridClient.zip -d /opt/rdtc
+  cp -R rdtc-backup/appsettings.json /opt/rdtc/
+  msg_ok "Updated ${APP}"
+
+  msg_info "Starting ${APP}"
+  systemctl start rdtc
+  msg_ok "Started ${APP}"
+
+  msg_info "Cleaning Up"
+  rm -rf rdtc-backup RealDebridClient.zip
+  msg_ok "Cleaned"
+  msg_ok "Updated Successfully"
+  exit
 }
 
 start

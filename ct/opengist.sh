@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 community-scripts ORG
 # Author: Jonathan (jd-apprentice)
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -36,10 +36,10 @@ function update_script() {
     msg_info "Updating ${APP} to v${RELEASE}"
     $STD apt-get update
     $STD apt-get -y upgrade
-    cd /opt
+    cd /opt || exit
     mv /opt/opengist /opt/opengist-backup
     curl -fsSL "https://github.com/thomiceli/opengist/releases/download/v${RELEASE}/opengist${RELEASE}-linux-amd64.tar.gz" -o $(basename "https://github.com/thomiceli/opengist/releases/download/v${RELEASE}/opengist${RELEASE}-linux-amd64.tar.gz")
-    tar -xzf opengist${RELEASE}-linux-amd64.tar.gz
+    tar -xzf opengist"${RELEASE}"-linux-amd64.tar.gz
     mv /opt/opengist-backup/config.yml /opt/opengist/config.yml
     chmod +x /opt/opengist/opengist
     echo "${RELEASE}" >"/opt/${APP}_version.txt"
@@ -50,7 +50,7 @@ function update_script() {
     msg_ok "Started Service"
 
     msg_info "Cleaning up"
-    rm -rf /opt/opengist${RELEASE}-linux-amd64.tar.gz
+    rm -rf /opt/opengist"${RELEASE}"-linux-amd64.tar.gz
     rm -rf /opt/opengist-backup
     $STD apt-get -y autoremove
     $STD apt-get -y autoclean

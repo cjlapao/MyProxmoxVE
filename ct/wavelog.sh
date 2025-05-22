@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 community-scripts ORG
 # Author: Don Locke (DonLocke)
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -41,9 +41,9 @@ function update_script() {
       cp /opt/wavelog/assets/js/sections/custom.js /opt/custom.js
     fi
     curl -fsSL "https://github.com/wavelog/wavelog/archive/refs/tags/${RELEASE}.zip" -o $(basename "https://github.com/wavelog/wavelog/archive/refs/tags/${RELEASE}.zip")
-    unzip -q ${RELEASE}.zip
+    unzip -q "${RELEASE}".zip
     rm -rf /opt/wavelog
-    mv wavelog-${RELEASE}/ /opt/wavelog
+    mv wavelog-"${RELEASE}"/ /opt/wavelog
     rm -rf /opt/wavelog/install
     mv /opt/config.php /opt/wavelog/application/config/config.php
     mv /opt/database.php /opt/wavelog/application/config/database.php
@@ -63,7 +63,7 @@ function update_script() {
     msg_ok "Started Services"
 
     msg_info "Cleaning Up"
-    rm -rf ${RELEASE}.zip
+    rm -rf "${RELEASE}".zip
     msg_ok "Cleaned"
     msg_ok "Updated Successfully"
   else

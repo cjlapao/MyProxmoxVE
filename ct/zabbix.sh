@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 community-scripts ORG
 # Author: MickLesk (CanbiZ)
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -38,7 +38,7 @@ function update_script() {
   cp -R /usr/share/zabbix/ /opt/zabbix-backup/
   #cp -R /usr/share/zabbix-* /opt/zabbix-backup/ Remove temporary
   rm -Rf /etc/apt/sources.list.d/zabbix.list
-  cd /tmp
+  cd /tmp || exit
   curl -fsSL "$(curl -fsSL https://repo.zabbix.com/zabbix/ |
     grep -oP '(?<=href=")[0-9]+\.[0-9]+(?=/")' | sort -V | tail -n1 |
     xargs -I{} echo "https://repo.zabbix.com/zabbix/{}/release/debian/pool/main/z/zabbix-release/zabbix-release_latest+debian12_all.deb")" \

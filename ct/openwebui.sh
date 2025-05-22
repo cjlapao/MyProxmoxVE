@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 tteck
 # Author: havardthom
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -43,7 +43,7 @@ function update_script() {
   fi
 
   msg_info "Updating ${APP} (Patience)"
-  cd /opt/open-webui
+  cd /opt/open-webui || exit
   mkdir -p /opt/open-webui-backup
   cp -rf /opt/open-webui/backend/data /opt/open-webui-backup
   git add -A
@@ -58,7 +58,7 @@ function update_script() {
   $STD npm install
   export NODE_OPTIONS="--max-old-space-size=3584"
   $STD npm run build
-  cd ./backend
+  cd ./backend || exit
   $STD pip install -r requirements.txt -U
   cp -rf /opt/open-webui-backup/* /opt/open-webui/backend
   if git stash list | grep -q 'stash@{'; then

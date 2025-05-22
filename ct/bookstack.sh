@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 community-scripts ORG
 # Author: MickLesk (Canbiz)
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -42,7 +42,7 @@ function update_script() {
     [[ -d /opt/bookstack-backup/public/uploads ]] && cp -a /opt/bookstack-backup/public/uploads/. /opt/bookstack/public/uploads/
     [[ -d /opt/bookstack-backup/storage/uploads ]] && cp -a /opt/bookstack-backup/storage/uploads/. /opt/bookstack/storage/uploads/
     [[ -d /opt/bookstack-backup/themes ]] && cp -a /opt/bookstack-backup/themes/. /opt/bookstack/themes/
-    cd /opt/bookstack
+    cd /opt/bookstack || exit
     export COMPOSER_ALLOW_SUPERUSER=1
     $STD composer install --no-dev
     $STD php artisan migrate --force

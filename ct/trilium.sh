@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 tteck
 # Author: tteck (tteckster)
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -39,16 +39,16 @@ function update_script() {
     mkdir -p /opt/trilium_backup
     mv /opt/trilium/db /opt/trilium_backup/
     rm -rf /opt/trilium
-    cd /tmp
+    cd /tmp || exit
     curl -fsSL "https://github.com/TriliumNext/Notes/releases/download/v${RELEASE}/TriliumNextNotes-Server-v${RELEASE}-linux-x64.tar.xz" -o $(basename "https://github.com/TriliumNext/Notes/releases/download/v${RELEASE}/TriliumNextNotes-Server-v${RELEASE}-linux-x64.tar.xz")
-    tar -xf TriliumNextNotes-Server-v${RELEASE}-linux-x64.tar.xz
-    mv TriliumNextNotes-Server-$RELEASE-linux-x64 /opt/trilium
+    tar -xf TriliumNextNotes-Server-v"${RELEASE}"-linux-x64.tar.xz
+    mv TriliumNextNotes-Server-"$RELEASE"-linux-x64 /opt/trilium
     cp -r /opt/trilium_backup/db /opt/trilium/
     echo "v${RELEASE}" >/opt/${APP}_version.txt
     msg_ok "Updated to ${RELEASE}"
 
     msg_info "Cleaning up"
-    rm -rf /tmp/TriliumNextNotes-Server-${RELEASE}-linux-x64.tar.xz
+    rm -rf /tmp/TriliumNextNotes-Server-"${RELEASE}"-linux-x64.tar.xz
     rm -rf /opt/trilium_backup
     msg_ok "Cleaned"
 

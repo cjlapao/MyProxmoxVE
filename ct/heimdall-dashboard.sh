@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 tteck
 # Author: tteck (tteckster)
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -43,14 +43,14 @@ function update_script() {
     tar xzf "${RELEASE}".tar.gz
     VER=$(curl -fsSL https://api.github.com/repos/linuxserver/Heimdall/releases/latest | grep "tag_name" | awk '{print substr($2, 3, length($2)-4) }')
     cp -R Heimdall-"${VER}"/* /opt/Heimdall
-    cd /opt/Heimdall
+    cd /opt/Heimdall || exit
     $STD apt-get install -y composer
     export COMPOSER_ALLOW_SUPERUSER=1
     $STD composer dump-autoload
     echo "${RELEASE}" >/opt/${APP}_version.txt
     msg_ok "Updated Heimdall Dashboard to ${RELEASE}"
     msg_info "Restoring Data"
-    cd ~
+    cd ~ || exit
     cp -R database-backup/* /opt/Heimdall/database
     cp -R public-backup/* /opt/Heimdall/public
     sleep 1

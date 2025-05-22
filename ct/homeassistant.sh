@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 tteck
 # Author: tteck (tteckster)
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -63,7 +63,7 @@ function update_script() {
     msg_info "Installing Home Assistant Community Store (HACS)"
     $STD apt update
     $STD apt install unzip
-    cd /var/lib/docker/volumes/hass_config/_data
+    cd /var/lib/docker/volumes/hass_config/_data || exit
     $STD bash <(curl -fsSL https://get.hacs.xyz)
     msg_ok "Installed Home Assistant Community Store (HACS)"
     echo -e "\n Reboot Home Assistant and clear browser cache then Add HACS integration.\n"

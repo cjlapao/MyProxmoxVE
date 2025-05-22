@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 community-scripts ORG
 # Author: bvdberg01
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -34,7 +34,7 @@ function update_script() {
     msg_ok "Stopped Service"
 
     msg_info "Updating ${APP} to v${RELEASE}"
-    cd /opt
+    cd /opt || exit
     curl -fsSL "https://github.com/projectsend/projectsend/releases/download/r${RELEASE}/projectsend-r${RELEASE}.zip" -o $(basename "https://github.com/projectsend/projectsend/releases/download/r${RELEASE}/projectsend-r${RELEASE}.zip")
     unzip -o -q "projectsend-r${RELEASE}.zip" -d projectsend
     chown -R www-data:www-data /opt/projectsend

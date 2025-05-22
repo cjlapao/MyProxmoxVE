@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 tteck
 # Author: tteck (tteckster)
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -29,7 +29,7 @@ function update_script() {
   fi
   msg_info "Updating $APP"
   systemctl stop overseerr
-  cd /opt/overseerr
+  cd /opt/overseerr || exit
   output=$(git pull)
   $STD git pull
   if echo "$output" | grep -q "Already up to date."; then

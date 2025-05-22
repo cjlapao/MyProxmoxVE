@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/ProxmoxVE/main/misc/build.func)
 # Source: https://github.com/gristlabs/grist-core
 
 APP="Grist"
@@ -35,12 +35,12 @@ function update_script() {
 
     msg_info "Updating ${APP} to v${RELEASE}"
 
-    cd /opt
+    cd /opt || exit
     rm -rf grist_bak
     mv grist grist_bak
     curl -fsSL "https://github.com/gristlabs/grist-core/archive/refs/tags/v${RELEASE}.zip" -o $(basename "https://github.com/gristlabs/grist-core/archive/refs/tags/v${RELEASE}.zip")
-    unzip -q v$RELEASE.zip
-    mv grist-core-${RELEASE} grist
+    unzip -q v"$RELEASE".zip
+    mv grist-core-"${RELEASE}" grist
 
     mkdir -p grist/docs
 
@@ -49,7 +49,7 @@ function update_script() {
     cp grist_bak/grist-sessions.db grist/grist-sessions.db || true
     cp grist_bak/landing.db grist/landing.db || true
 
-    cd grist
+    cd grist || exit
     msg_info "Installing Dependencies"
     $STD yarn install
     msg_ok "Installed Dependencies"
@@ -71,7 +71,7 @@ function update_script() {
     msg_ok "Started ${APP} Service"
 
     msg_info "Cleaning up"
-    rm -rf /opt/v$RELEASE.zip
+    rm -rf /opt/v"$RELEASE".zip
     msg_ok "Cleaned"
 
     msg_ok "Updated Successfully!\n"
