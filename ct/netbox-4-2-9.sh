@@ -5,7 +5,7 @@ source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/MyProxmoxVE/main/m
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
 # Source: https://netboxlabs.com/
 
-APP="NetBox_4_2_9"
+APP="NetBox-4-2-9"
 var_tags="${var_tags:-network}"
 var_cpu="${var_cpu:-2}"
 var_ram="${var_ram:-2048}"
