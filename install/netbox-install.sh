@@ -49,10 +49,13 @@ $STD sudo -u postgres psql -c "CREATE DATABASE $DB_NAME WITH OWNER $DB_USER TEMP
 } >>~/netbox.creds
 msg_ok "Set up PostgreSQL"
 
+msg_info "Setting the release version to 4.2.9"
+RELEASE="4.2.9"
+msg_ok "Set the release version to 4.2.9"
+
 msg_info "Installing NetBox (Patience)"
 cd /opt || exit
-RELEASE=$(curl -fsSL https://api.github.com/repos/netbox-community/netbox/releases/latest | grep "tag_name" | awk '{print substr($2, 3, length($2)-4) }')
-RELEASE="4.2.9"
+
 curl -fsSL "https://github.com/netbox-community/netbox/archive/refs/tags/v${RELEASE}.zip" -o $(basename "https://github.com/netbox-community/netbox/archive/refs/tags/v${RELEASE}.zip")
 unzip -q "v${RELEASE}.zip"
 mv /opt/netbox-"${RELEASE}"/ /opt/netbox
