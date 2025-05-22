@@ -49,13 +49,9 @@ $STD sudo -u postgres psql -c "CREATE DATABASE $DB_NAME WITH OWNER $DB_USER TEMP
 } >>~/netbox.creds
 msg_ok "Set up PostgreSQL"
 
-msg_info "Setting the release version to 4.2.9"
-RELEASE="4.2.9"
-msg_ok "Set the release version to 4.2.9"
-
 msg_info "Installing NetBox (Patience)"
 cd /opt || exit
-
+RELEASE=$(curl -fsSL https://api.github.com/repos/netbox-community/netbox/releases/latest | grep "tag_name" | awk '{print substr($2, 3, length($2)-4) }')
 curl -fsSL "https://github.com/netbox-community/netbox/archive/refs/tags/v${RELEASE}.zip" -o $(basename "https://github.com/netbox-community/netbox/archive/refs/tags/v${RELEASE}.zip")
 unzip -q "v${RELEASE}.zip"
 mv /opt/netbox-"${RELEASE}"/ /opt/netbox
@@ -75,7 +71,7 @@ sed -i "s|SECRET_KEY = ''|SECRET_KEY = '${ESCAPED_SECRET_KEY}'|" /opt/netbox/net
 sed -i "/DATABASES = {/,/}/s/'USER': '[^']*'/'USER': '$DB_USER'/" /opt/netbox/netbox/netbox/configuration.py
 sed -i "/DATABASES = {/,/}/s/'PASSWORD': '[^']*'/'PASSWORD': '$DB_PASS'/" /opt/netbox/netbox/netbox/configuration.py
 
-#$STD /opt/netbox/upgrade.sh
+$STD /opt/netbox/upgrade.sh
 ln -s /opt/netbox/contrib/netbox-housekeeping.sh /etc/cron.daily/netbox-housekeeping
 
 mv /opt/netbox/contrib/apache.conf /etc/apache2/sites-available/netbox.conf
