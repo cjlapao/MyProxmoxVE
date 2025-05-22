@@ -56,7 +56,7 @@ msg_ok "Set the release version to 4.2.9"
 msg_info "Installing NetBox (Patience)"
 cd /opt || exit
 
-curl -fsSL "https://github.com/netbox-community/netbox/archive/refs/tags/v${RELEASE}.zip" -o $(basename "https://github.com/netbox-community/netbox/archive/refs/tags/v${RELEASE}.zip")
+curl -fsSL "https://github.com/netbox-community/netbox/archive/refs/tags/${RELEASE}.zip" -o $(basename "https://github.com/netbox-community/netbox/archive/refs/tags/v${RELEASE}.zip")
 unzip -q "v${RELEASE}.zip"
 mv /opt/netbox-"${RELEASE}"/ /opt/netbox
 
