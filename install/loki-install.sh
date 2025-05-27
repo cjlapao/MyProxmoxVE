@@ -43,7 +43,7 @@ if [ -z "$RETENTION_HOURS" ]; then
 fi
 
 msg_info "Creating Loki configuration"
-$STD mkdir -p /etc/loki /var/lib/loki
+$STD mkdir -p /etc/loki /var/lib/loki /data
 $STD touch /etc/loki/loki-config.yaml
 
 if [ "$USE_AZURE" == "y" ]; then
@@ -116,6 +116,7 @@ limits_config:
 EOF
 $STD chown -R loki:loki /var/lib/loki
 $STD chown -R loki:loki /etc/loki
+$STD chown -R loki:loki /data
 
 msg_ok "Created Loki configuration"
 
