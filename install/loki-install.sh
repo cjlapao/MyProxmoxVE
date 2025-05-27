@@ -73,7 +73,10 @@ ingester:
         store: inmemory
       replication_factor: 1
   chunk_idle_period: 5m
-  chunk_retain_period: 30s
+  chunk_block_size: 262144
+  max_chunk_age: 1h
+  flush_check_period: 30s
+  flush_op_timeout: 10s
 
 schema_config:
   configs:
@@ -106,13 +109,34 @@ compactor:
 
 query_scheduler:
   max_outstanding_requests_per_tenant: 32768
+
 querier:
+  engine:
+    max_look_back_period: 0s
+  query_ingesters_within: 3h
   max_concurrent: 16
+
+query_range:
+  align_queries_with_step: true
+  max_retries: 5
+  parallelise_shardable_queries: true
+
 limits_config:
   retention_period: ${RETENTION_HOURS}
   max_query_lookback: ${RETENTION_HOURS}
+  ingestion_rate_mb: 4
+  ingestion_burst_size_mb: 6
+  max_streams_per_user: 100000
   reject_old_samples: true
   reject_old_samples_max_age: 168h
+
+querier:
+  engine:
+    max_look_back_period: 0s
+  query_ingesters_within: 3h
+
+frontend:
+  log_queries_longer_than: 5s
 EOF
 $STD chown -R loki:loki /var/lib/loki
 $STD chown -R loki:loki /etc/loki
