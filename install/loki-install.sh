@@ -31,7 +31,6 @@ $STD rm loki-linux-amd64.zip
 
 msg_ok "Downloaded and extracted Loki"
 
-msg_info "Creating Loki configuration"
 $STD mkdir -p /etc/loki /var/lib/loki
 
 read -p "Do you want to use Azure Blob Storage? (y/n): " USE_AZURE
@@ -45,6 +44,7 @@ if [ -z "$RETENTION_DAYS" ]; then
   RETENTION_DAYS=0
 fi
 
+msg_info "Creating Loki configuration"
 $STD cat <<EOF >/etc/loki/loki-config.yaml
 auth_enabled: false
 
