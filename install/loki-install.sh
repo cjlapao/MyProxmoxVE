@@ -31,20 +31,32 @@ $STD rm loki-linux-amd64.zip
 
 msg_ok "Downloaded and extracted Loki"
 
-$STD mkdir -p /etc/loki /var/lib/loki
-
 read -p "Do you want to use Azure Blob Storage? (y/n): " USE_AZURE
 if [ "$USE_AZURE" == "y" ]; then
   read -p "Enter your Azure Blob Storage Account Key: " AZURE_ACCOUNT_KEY
   read -p "Enter your Azure Blob Storage Account Name: " AZURE_ACCOUNT_NAME
   read -p "Enter your Azure Blob Storage Container Name: " AZURE_CONTAINER_NAME
 fi
-read -p "How many days of data do you want to keep (in hours)? (default: 0): " RETENTION_DAYS
-if [ -z "$RETENTION_DAYS" ]; then
-  RETENTION_DAYS=0
+read -p "How many days of data do you want to keep (in hours)? (default: 0): " RETENTION_HOURS
+if [ -z "$RETENTION_HOURS" ]; then
+  RETENTION_HOURS=0
 fi
 
 msg_info "Creating Loki configuration"
+$STD mkdir -p /etc/loki /var/lib/loki
+$STD touch /etc/loki/loki-config.yaml
+
+if [ "$USE_AZURE" == "y" ]; then
+  STORAGE_TYPE="azure"
+else
+  STORAGE_TYPE="filesystem"
+fi
+if [ "$RETENTION_HOURS" == "0" ]; then
+  RETENTION_HOURS="0s"
+else
+  RETENTION_HOURS="${RETENTION_HOURS}h"
+fi
+
 $STD cat <<EOF >/etc/loki/loki-config.yaml
 auth_enabled: false
 
@@ -53,6 +65,8 @@ server:
   log_level: info
 
 ingester:
+  wal:
+    dir: /var/lib/loki/wal
   lifecycler:
     ring:
       kvstore:
@@ -64,31 +78,13 @@ ingester:
 schema_config:
   configs:
     - from: 2023-01-01
-      store: boltdb-shipper
-      object_store: filesystem
-      schema: v11
+      store: tsdb
+      object_store: ${STORAGE_TYPE}
+      schema: v13
       index:
         prefix: index_
         period: 24h
 
-limits_config:
-  reject_old_samples: true
-  reject_old_samples_max_age: 168h
-EOF
-if [ "$USE_AZURE" == "y" ]; then
-  STORAGE_TYPE="azure"
-else
-  STORAGE_TYPE="filesystem"
-fi
-if [ "$RETENTION_DAYS" == "0" ]; then
-  RETENTION_DAYS="0s"
-  RETENTION_DELETES_ENABLED="false"
-else
-  RETENTION_DAYS="${RETENTION_DAYS}h"
-  RETENTION_DELETES_ENABLED="true"
-fi
-
-$STD cat <<EOF >>/etc/loki/loki-config.yaml
 storage_config:
   azure:
     account_name: ${AZURE_ACCOUNT_NAME}
@@ -96,19 +92,31 @@ storage_config:
     container_name: ${AZURE_CONTAINER_NAME}
   filesystem:
     directory: /var/lib/loki/chunks  
-  boltdb_shipper:
+  tsdb_shipper:
     active_index_directory: /var/lib/loki/index
     cache_location: /var/lib/loki/cache
-    shared_store: $STORAGE_TYPE
-    chunk_idle_period: 5m
-    chunk_retain_period: 30s
-    retention_deletes_enabled: ${RETENTION_DELETES_ENABLED}
-    retention_period: ${RETENTION_DAYS}h
 
-table_manager:
-  retention_deletes_enabled: ${RETENTION_DELETES_ENABLED}
-  retention_period: ${RETENTION_DAYS}h
+compactor:
+  working_directory: /data/retention
+  compaction_interval: 10m
+  retention_enabled: true
+  retention_delete_delay: 2h
+  retention_delete_worker_count: 150
+  delete_request_store: ${STORAGE_TYPE}
+
+query_scheduler:
+  max_outstanding_requests_per_tenant: 32768
+querier:
+  max_concurrent: 16
+limits_config:
+  retention_period: ${RETENTION_HOURS}
+  max_query_lookback: ${RETENTION_HOURS}
+  reject_old_samples: true
+  reject_old_samples_max_age: 168h
 EOF
+$STD chown -R loki:loki /var/lib/loki
+$STD chown -R loki:loki /etc/loki
+
 msg_ok "Created Loki configuration"
 
 msg_info "Creating Loki service"
