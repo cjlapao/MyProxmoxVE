@@ -130,11 +130,6 @@ limits_config:
   reject_old_samples: true
   reject_old_samples_max_age: 168h
 
-querier:
-  engine:
-    max_look_back_period: 0s
-  query_ingesters_within: 3h
-
 frontend:
   log_queries_longer_than: 5s
 EOF
