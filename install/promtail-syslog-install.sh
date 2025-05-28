@@ -58,6 +58,11 @@ scrape_configs:
     relabel_configs:
       - source_labels: ['__syslog_message_hostname']
         target_label: 'host'
+    pipeline_stages:
+      - regex:
+          expression: 'level=(?P<level>\w+)'
+      - labels:
+          level:
 EOF
 $STD chown -R promtail:promtail /var/lib/promtail
 $STD chown -R promtail:promtail /etc/promtail
