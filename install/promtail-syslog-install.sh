@@ -32,7 +32,7 @@ msg_ok "Downloaded and extracted Promtail"
 
 read -p "Enter the Loki server URL: " LOKI_SERVER_URL
 if [ -z "$LOKI_SERVER_URL" ]; then
-  LOKI_SERVER_URL="http://loki.homelab.local:3100"
+  LOKI_SERVER_URL="https://loki.homelab.local"
 fi
 
 msg_info "Creating Promtail configuration"
@@ -49,6 +49,8 @@ positions:
 
 clients:
   - url: ${LOKI_SERVER_URL}/loki/api/v1/push
+    tls_config:
+      insecure_skip_verify: true
 
 scrape_configs:
   - job_name: opnsense-syslog
@@ -72,7 +74,7 @@ msg_ok "Created Promtail configuration"
 msg_info "Creating Promtail service"
 $STD cat <<EOF >/etc/systemd/system/promtail.service
 [Unit]
-Description=Grafana Promtail Log Forwarder
+Description=Grafana Promtail Syslog Log Forwarder
 After=network.target
 
 [Service]
