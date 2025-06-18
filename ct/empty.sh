@@ -23,7 +23,6 @@ function update_script() {
   header_info
   check_container_storage
   check_container_resources
-  msg_ok "Updated Successfully"
   exit
 }
 
@@ -31,5 +30,4 @@ start
 build_container
 description
 
-msg_ok "Completed Successfully!\n"
 echo -e "${CREATING}${GN}${APP} setup has been successfully initialized!${CL}"
