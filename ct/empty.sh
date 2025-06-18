@@ -5,7 +5,7 @@ source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/MyProxmoxVE/main/m
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
 # Source: https://github.com/bastienwirtz/homer
 
-APP="Homer"
+APP="Empty"
 var_tags="${var_tags:-dashboard}"
 var_cpu="${var_cpu:-1}"
 var_ram="${var_ram:-512}"
