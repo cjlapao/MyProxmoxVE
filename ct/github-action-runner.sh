@@ -7,7 +7,7 @@ source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/MyProxmoxVE/main/m
 
 APP="gitHub-action-runner"
 var_tags="${var_tags:-dashboard}"
-var_cpu="${var_cpu:-1}"
+var_cpu="${var_cpu:-2}"
 var_ram="${var_ram:-512}"
 var_disk="${var_disk:-40}"
 var_os="${var_os:-debian}"
