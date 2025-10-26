@@ -14,22 +14,22 @@ network_check
 update_os
 
 msg_info "Installing Dependencies"
-$STD apt-get install -y \
+$STD apt install -y \
   build-essential
 msg_ok "Installed Dependencies"
 
 msg_info "Installing Python3"
-$STD apt-get install -y \
+$STD apt install -y \
   python3-pip
 msg_ok "Installed Python3"
 
-install_node_and_modules
+setup_nodejs
 
 msg_info "Setup Paperless-AI"
 cd /opt
 RELEASE=$(curl -fsSL https://api.github.com/repos/clusterzx/paperless-ai/releases/latest | grep "tag_name" | awk '{print substr($2, 3, length($2)-4) }')
-curl -fsSL "https://github.com/clusterzx/paperless-ai/archive/refs/tags/v${RELEASE}.zip" -o $(basename "https://github.com/clusterzx/paperless-ai/archive/refs/tags/v${RELEASE}.zip")
-unzip -q v${RELEASE}.zip
+curl -fsSL "https://github.com/clusterzx/paperless-ai/archive/refs/tags/v${RELEASE}.zip" -o "v${RELEASE}.zip"
+$STD unzip v${RELEASE}.zip
 mv paperless-ai-${RELEASE} /opt/paperless-ai
 cd /opt/paperless-ai
 $STD pip install --no-cache-dir -r requirements.txt
@@ -103,6 +103,7 @@ customize
 
 msg_info "Cleaning up"
 rm -rf /opt/v${RELEASE}.zip
-$STD apt-get -y autoremove
-$STD apt-get -y autoclean
+$STD apt -y autoremove
+$STD apt -y autoclean
+$STD apt -y clean
 msg_ok "Cleaned"

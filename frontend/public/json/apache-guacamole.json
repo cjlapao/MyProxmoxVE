@@ -9,7 +9,7 @@
   "updateable": false,
   "privileged": false,
   "interface_port": 8080,
-  "documentation": null,
+  "documentation": "https://guacamole.apache.org/doc/gug/",
   "website": "https://guacamole.apache.org/",
   "logo": "https://cdn.jsdelivr.net/gh/selfhst/icons/webp/apache-guacamole.webp",
   "config_path": "/etc/guacamole/guacd.conf",
@@ -23,7 +23,7 @@
         "ram": 2048,
         "hdd": 4,
         "os": "debian",
-        "version": "12"
+        "version": "13"
       }
     }
   ],

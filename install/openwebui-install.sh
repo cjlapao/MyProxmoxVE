@@ -15,28 +15,19 @@ network_check
 update_os
 
 msg_info "Installing Dependencies"
-$STD apt-get install -y \
-  gpg \
+$STD apt install -y \
   git \
-  ffmpeg
+  ffmpeg \
+  libpq-dev
 msg_ok "Installed Dependencies"
 
 msg_info "Setup Python3"
-$STD apt-get install -y --no-install-recommends \
+$STD apt install -y --no-install-recommends \
   python3 \
   python3-pip
 msg_ok "Setup Python3"
 
-msg_info "Setting up Node.js Repository"
-mkdir -p /etc/apt/keyrings
-curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
-echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_22.x nodistro main" >/etc/apt/sources.list.d/nodesource.list
-msg_ok "Set up Node.js Repository"
-
-msg_info "Installing Node.js"
-$STD apt-get update
-$STD apt-get install -y nodejs
-msg_ok "Installed Node.js"
+NODE_VERSION="22" setup_nodejs
 
 msg_info "Installing Open WebUI (Patience)"
 $STD git clone https://github.com/open-webui/open-webui.git /opt/open-webui
@@ -50,15 +41,15 @@ ENV=prod
 ENABLE_OLLAMA_API=false
 OLLAMA_BASE_URL=http://0.0.0.0:11434
 EOF
-$STD npm install
-export NODE_OPTIONS="--max-old-space-size=3584"
+$STD npm install --force
+export NODE_OPTIONS="--max-old-space-size=6000"
 $STD npm run build
 msg_ok "Installed Open WebUI"
 
 read -r -p "${TAB3}Would you like to add Ollama? <y/N> " prompt
 if [[ ${prompt,,} =~ ^(y|yes)$ ]]; then
   msg_info "Installing Ollama"
-  curl -fsSLO https://ollama.com/download/ollama-linux-amd64.tgz
+  curl -fsSLO -C - https://ollama.com/download/ollama-linux-amd64.tgz
   tar -C /usr -xzf ollama-linux-amd64.tgz
   rm -rf ollama-linux-amd64.tgz
   cat <<EOF >/etc/systemd/system/ollama.service
@@ -104,6 +95,7 @@ motd_ssh
 customize
 
 msg_info "Cleaning up"
-$STD apt-get -y autoremove
-$STD apt-get -y autoclean
+$STD apt -y autoremove
+$STD apt -y autoclean
+$STD apt -y clean
 msg_ok "Cleaned"

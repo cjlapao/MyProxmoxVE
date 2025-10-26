@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/MyProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 tteck
 # Author: tteck (tteckster) | Co-Author: remz1337
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -27,9 +27,9 @@ function update_script() {
     msg_error "No ${APP} Installation Found!"
     exit
   fi
-  msg_info "Stopping ${APP}"
+  msg_info "Stopping Service"
   systemctl stop cps
-  msg_ok "Stopped ${APP}"
+  msg_ok "Stopped Service"
 
   msg_info "Updating ${APP}"
   cd /opt/kepubify
@@ -121,9 +121,9 @@ function update_script() {
     $STD pip install --upgrade calibreweb
   fi
 
-  msg_info "Starting ${APP}"
+  msg_info "Starting Service"
   systemctl start cps
-  msg_ok "Started ${APP}"
+  msg_ok "Started Service"
   msg_ok "Updated Successfully"
   exit
 }

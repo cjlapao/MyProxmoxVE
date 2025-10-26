@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/MyProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
 # Copyright (c) community-scripts ORG
 # Author: Michelle Zitzerman (Sinofage)
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -20,26 +20,27 @@ color
 catch_errors
 
 function update_script() {
-  header_info
-  check_container_storage
-  check_container_resources
-  if [[ ! -d /opt/beszel ]]; then
-    msg_error "No ${APP} Installation Found!"
+    header_info
+    check_container_storage
+    check_container_resources
+    if [[ ! -d /opt/beszel ]]; then
+        msg_error "No ${APP} Installation Found!"
+        exit
+    fi
+    msg_info "Stopping $APP"
+    systemctl stop beszel-hub
+    msg_ok "Stopped $APP"
+
+    msg_info "Updating $APP"
+    $STD /opt/beszel/beszel update
+    sleep 2 && chmod +x /opt/beszel/beszel
+    msg_ok "Updated $APP"
+
+    msg_info "Starting $APP"
+    systemctl start beszel-hub
+    msg_ok "Successfully started $APP"
+    msg_ok "Update Successful"
     exit
-  fi
-  msg_info "Stopping $APP"
-  systemctl stop beszel-hub
-  msg_ok "Stopped $APP"
-
-  msg_info "Updating $APP"
-  $STD /opt/beszel/beszel update
-  msg_ok "Updated $APP"
-
-  msg_info "Starting $APP"
-  systemctl start beszel-hub
-  msg_ok "Successfully started $APP"
-  msg_ok "Update Successful"
-  exit
 }
 
 start

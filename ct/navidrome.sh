@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/MyProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 community-scripts ORG
 # Author: MickLesk (CanbiZ)
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -11,7 +11,7 @@ var_cpu="${var_cpu:-2}"
 var_ram="${var_ram:-1024}"
 var_disk="${var_disk:-4}"
 var_os="${var_os:-debian}"
-var_version="${var_version:-12}"
+var_version="${var_version:-13}"
 var_unprivileged="${var_unprivileged:-1}"
 
 header_info "$APP"
@@ -27,30 +27,18 @@ function update_script() {
     msg_error "No ${APP} Installation Found!"
     exit
   fi
-  RELEASE=$(curl -fsSL https://api.github.com/repos/navidrome/navidrome/releases/latest | grep "tag_name" | awk -F '"' '{print $4}')
-  if [[ ! -f /opt/${APP}_version.txt ]]; then touch /opt/${APP}_version.txt; fi
-  if [[ "${RELEASE}" != "$(cat /opt/${APP}_version.txt)" ]]; then
+
+  if check_for_gh_release "navidrome" "navidrome/navidrome"; then
     msg_info "Stopping Services"
     systemctl stop navidrome
     msg_ok "Services Stopped"
 
-    msg_info "Updating ${APP} to ${RELEASE}"
-    TMP_DEB=$(mktemp --suffix=.deb)
-    curl -fsSL -o "${TMP_DEB}" "https://github.com/navidrome/navidrome/releases/download/${RELEASE}/navidrome_${RELEASE#v}_linux_amd64.deb"
-    $STD apt-get install -y "${TMP_DEB}"
-    echo "${RELEASE}" >/opt/"${APP}_version.txt"
-    msg_ok "Updated Navidrome"
+    fetch_and_deploy_gh_release "navidrome" "navidrome/navidrome" "binary"
 
     msg_info "Starting Services"
     systemctl start navidrome
     msg_ok "Started Services"
-
-    msg_info "Cleaning Up"
-    rm -f "${TMP_DEB}"
-    msg_ok "Cleaned"
     msg_ok "Updated Successfully"
-  else
-    msg_ok "No update required. ${APP} is already at ${RELEASE}"
   fi
   exit
 }

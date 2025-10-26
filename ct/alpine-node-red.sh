@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/MyProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 community-scripts ORG
 # Author: MickLesk (CanbiZ)
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -11,7 +11,7 @@ var_cpu="${var_cpu:-1}"
 var_ram="${var_ram:-256}"
 var_disk="${var_disk:-1}"
 var_os="${var_os:-alpine}"
-var_version="${var_version:-3.21}"
+var_version="${var_version:-3.22}"
 var_unprivileged="${var_unprivileged:-1}"
 
 header_info "$APP"
@@ -31,10 +31,6 @@ function update_script() {
   msg_info "Updating Node-RED"
   $STD npm install -g --unsafe-perm node-red
   msg_ok "Updated Node-RED"
-
-  msg_info "Restarting Node-RED"
-  $STD rc-service nodered restart
-  msg_ok "Restarted Node-RED"
 
   exit 0
 }

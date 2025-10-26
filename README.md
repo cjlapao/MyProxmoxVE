@@ -1,7 +1,7 @@
 <div align="center">
   <p align="center">
     <a href="#">
-      <img src="https://raw.githubusercontent.com/cjlapao/MyProxmoxVE/main/misc/images/logo.png" height="100px" />
+      <img src="https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/images/logo-81x112.png" height="100px" />
     </a>
   </p>
 </div>
@@ -13,18 +13,18 @@
     <a href="https://helper-scripts.com">
       <img src="https://img.shields.io/badge/Website-4c9b3f?style=for-the-badge&logo=github&logoColor=white" alt="Website" />
     </a>
-    <a href="https://discord.gg/jsYVk5JBxq">
+    <a href="https://discord.gg/3AnUqsXnmK">
       <img src="https://img.shields.io/badge/Discord-7289da?style=for-the-badge&logo=discord&logoColor=white" alt="Discord" />
-    </a>
+    </a> 
     <a href="https://ko-fi.com/community_scripts">
       <img src="https://img.shields.io/badge/Support-FF5F5F?style=for-the-badge&logo=ko-fi&logoColor=white" alt="Donate" />
     </a>
     <a href="https://github.com/community-scripts/ProxmoxVE/blob/main/.github/CONTRIBUTOR_AND_GUIDES/CONTRIBUTING.md">
       <img src="https://img.shields.io/badge/Contribute-ff4785?style=for-the-badge&logo=git&logoColor=white" alt="Contribute" />
-    </a>
+    </a> 
     <a href="https://github.com/community-scripts/ProxmoxVE/blob/main/.github/CONTRIBUTOR_AND_GUIDES/USER_SUBMITTED_GUIDES.md">
       <img src="https://img.shields.io/badge/Guides-0077b5?style=for-the-badge&logo=read-the-docs&logoColor=white" alt="Guides" />
-    </a>
+    </a> 
     <a href="https://github.com/community-scripts/ProxmoxVE/blob/main/CHANGELOG.md">
       <img src="https://img.shields.io/badge/Changelog-6c5ce7?style=for-the-badge&logo=git&logoColor=white" alt="Changelog" />
     </a>
@@ -47,7 +47,6 @@
 - **Community-driven**: Actively maintained and improved by the Proxmox community.
 
 ---
-
 ## ✅ Requirements
 
 Ensure your system meets the following prerequisites:
@@ -75,7 +74,6 @@ To install the Proxmox Helper Scripts, follow these steps:
 We appreciate any contributions to the project—whether it's bug reports, feature requests, documentation improvements, or spreading the word. Your involvement helps keep the project alive and sustainable.
 
 ## 💖 Donate to Support the Project
-
 - **Ko-Fi for Community Edition**: [Donate to support this project](https://ko-fi.com/community_scripts) – Donations go towards maintaining the project, testing infrastructure, and charity (cancer research, hospice care). 30% of the funds will be donated to charity.
 
 ---
@@ -84,7 +82,7 @@ We appreciate any contributions to the project—whether it's bug reports, featu
 
 Join our community for support:
 
-- **Discord**: Join our [Proxmox Helper Scripts Discord server](https://discord.gg/jsYVk5JBxq) for real-time support.
+- **Discord**: Join our [Proxmox Helper Scripts Discord server](https://discord.gg/3AnUqsXnmK) for real-time support.
 - **GitHub Discussions**: [Ask questions or report issues](https://github.com/community-scripts/ProxmoxVE/discussions).
 
 ## 🤝 Report a Bug or Feature Request
@@ -112,3 +110,5 @@ This project is licensed under the [MIT License](LICENSE).
 <p align="center">
   <i style="font-size: smaller;"><b>Proxmox</b>® is a registered trademark of <a href="https://www.proxmox.com/en/about/company">Proxmox Server Solutions GmbH</a>.</i>
 </p>
+
+

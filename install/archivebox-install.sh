@@ -27,25 +27,16 @@ msg_ok "Installed Dependencies"
 
 msg_info "Installing Python Dependencies"
 $STD apt-get install -y \
-  python3-pip \
   python3-ldap \
   python3-msgpack \
   python3-regex
 msg_ok "Installed Python Dependencies"
 
-msg_info "Setting up Node.js Repository"
-mkdir -p /etc/apt/keyrings
-curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
-echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_22.x nodistro main" >/etc/apt/sources.list.d/nodesource.list
-msg_ok "Set up Node.js Repository"
-
-msg_info "Installing Node.js"
-$STD apt-get update
-$STD apt-get install -y nodejs
-msg_ok "Installed Node.js"
+NODE_VERSION="22" setup_nodejs
+PYTHON_VERSION="3.13" setup_uv
 
 msg_info "Installing Playwright"
-$STD pip install playwright
+$STD uv pip install playwright --system
 $STD playwright install-deps chromium
 msg_ok "Installed Playwright"
 
@@ -54,7 +45,7 @@ mkdir -p /opt/archivebox/{data,.npm,.cache,.local}
 $STD adduser --system --shell /bin/bash --gecos 'Archive Box User' --group --disabled-password --home /home/archivebox archivebox
 chown -R archivebox:archivebox /opt/archivebox/{data,.npm,.cache,.local}
 chmod -R 755 /opt/archivebox/data
-$STD pip install archivebox
+$STD uv pip install archivebox --system
 cd /opt/archivebox/data
 expect <<EOF
 set timeout -1

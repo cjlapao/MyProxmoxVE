@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/MyProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 tteck
 # Author: tteck (tteckster)
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -11,7 +11,7 @@ var_cpu="${var_cpu:-2}"
 var_ram="${var_ram:-2048}"
 var_disk="${var_disk:-12}"
 var_os="${var_os:-debian}"
-var_version="${var_version:-12}"
+var_version="${var_version:-13}"
 var_unprivileged="${var_unprivileged:-1}"
 
 header_info "$APP"
@@ -28,22 +28,24 @@ function update_script() {
     exit
   fi
 
-  msg_info "Stopping ${APP}"
-  systemctl stop umami
-  msg_ok "Stopped $APP"
+  if check_for_gh_release "umami" "umami-software/umami"; then
+    msg_info "Stopping Service"
+    systemctl stop umami
+    msg_ok "Stopped Service"
 
-  msg_info "Updating ${APP}"
-  cd /opt/umami || exit
-  git pull
-  yarn install
-  yarn build
-  msg_ok "Updated ${APP}"
+    fetch_and_deploy_gh_release "umami" "umami-software/umami" "tarball"
 
-  msg_info "Starting ${APP}"
-  systemctl start umami
-  msg_ok "Started ${APP}"
+    msg_info "Updating Umami"
+    cd /opt/umami
+    $STD yarn install
+    $STD yarn run build
+    msg_ok "Updated Umami"
 
-  msg_ok "Updated Successfully"
+    msg_info "Starting Service"
+    systemctl start umami
+    msg_ok "Started Service"
+    msg_ok "Updated Successfully"
+  fi
   exit
 }
 

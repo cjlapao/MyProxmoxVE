@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/MyProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 tteck
 # Author: tteck (tteckster)
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -27,9 +27,15 @@ function update_script() {
     msg_error "No ${APP} Installation Found!"
     exit
   fi
-  msg_info "Updating $APP LXC"
+  msg_info "Updating OS"
   $STD apt-get update
   $STD apt-get -y upgrade
+  msg_ok "Updated OS"
+
+  msg_info "Updating $APP LXC"
+  $STD yunohost tools update
+  $STD yunohost tools upgrade system
+  $STD yunohost tools upgrade apps
   msg_ok "Updated $APP LXC"
   exit
 }

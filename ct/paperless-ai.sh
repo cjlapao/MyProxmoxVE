@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/MyProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 community-scripts ORG
 # Author: MickLesk (CanbiZ)
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -7,11 +7,11 @@ source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/MyProxmoxVE/main/m
 
 APP="Paperless-AI"
 var_tags="${var_tags:-ai;document}"
-var_cpu="${var_cpu:-2}"
-var_ram="${var_ram:-2048}"
-var_disk="${var_disk:-5}"
+var_cpu="${var_cpu:-4}"
+var_ram="${var_ram:-4096}"
+var_disk="${var_disk:-20}"
 var_os="${var_os:-debian}"
-var_version="${var_version:-12}"
+var_version="${var_version:-13}"
 var_unprivileged="${var_unprivileged:-1}"
 
 header_info "$APP"
@@ -28,7 +28,7 @@ function update_script() {
     exit
   fi
   if ! dpkg -s python3-pip >/dev/null 2>&1; then
-    $STD apt-get install -y python3-pip
+    $STD apt install -y python3-pip
   fi
   RELEASE=$(curl -fsSL https://api.github.com/repos/clusterzx/paperless-ai/releases/latest | grep "tag_name" | awk '{print substr($2, 3, length($2)-4) }')
   if [[ "${RELEASE}" != "$(cat /opt/${APP}_version.txt)" ]] || [[ ! -f /opt/${APP}_version.txt ]]; then
@@ -37,14 +37,14 @@ function update_script() {
     msg_ok "Stopped $APP"
 
     msg_info "Updating $APP to v${RELEASE}"
-    cd /opt || exit
+    cd /opt
     mv /opt/paperless-ai /opt/paperless-ai_bak
     curl -fsSL "https://github.com/clusterzx/paperless-ai/archive/refs/tags/v${RELEASE}.zip" -o $(basename "https://github.com/clusterzx/paperless-ai/archive/refs/tags/v${RELEASE}.zip")
-    unzip -q v"${RELEASE}".zip
-    mv paperless-ai-"${RELEASE}" /opt/paperless-ai
+    $STD unzip v${RELEASE}.zip
+    mv paperless-ai-${RELEASE} /opt/paperless-ai
     mkdir -p /opt/paperless-ai/data
     cp -a /opt/paperless-ai_bak/data/. /opt/paperless-ai/data/
-    cd /opt/paperless-ai || exit
+    cd /opt/paperless-ai
     if [[ ! -f /etc/systemd/system/paperless-rag.service ]]; then
       cat <<EOF >/etc/systemd/system/paperless-rag.service
 [Unit]
@@ -73,7 +73,7 @@ EOF
     msg_ok "Started $APP"
 
     msg_info "Cleaning Up"
-    rm -rf /opt/v"${RELEASE}".zip
+    rm -rf /opt/v${RELEASE}.zip
     rm -rf /opt/paperless-ai_bak
     msg_ok "Cleanup Completed"
     msg_ok "Update Successful"

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/MyProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 community-scripts ORG
 # Author: CrazyWolf13
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -48,6 +48,7 @@ source /opt/homarr/.env
 set +a
 export DB_DIALECT='sqlite'
 export AUTH_SECRET=$(openssl rand -base64 32)
+export CRON_JOB_API_KEY=$(openssl rand -base64 32)
 node /opt/homarr_db/migrations/$DB_DIALECT/migrate.cjs /opt/homarr_db/migrations/$DB_DIALECT
 for dir in $(find /opt/homarr_db/migrations/migrations -mindepth 1 -maxdepth 1 -type d); do
   dirname=$(basename "$dir")
@@ -80,9 +81,8 @@ EOF
     msg_ok "Updated Services"
     systemctl daemon-reload
   fi
-  RELEASE=$(curl -fsSL https://api.github.com/repos/homarr-labs/homarr/releases/latest | grep "tag_name" | awk '{print substr($2, 3, length($2)-4) }')
-  if [[ ! -f /opt/${APP}_version.txt ]] || [[ "${RELEASE}" != "$(cat /opt/${APP}_version.txt)" ]]; then
 
+  if check_for_gh_release "homarr" "homarr-labs/homarr"; then
     msg_info "Stopping Services (Patience)"
     systemctl stop homarr
     msg_ok "Services Stopped"
@@ -92,7 +92,19 @@ EOF
     cp /opt/homarr/.env /opt/homarr-data-backup/.env
     msg_ok "Backup Data"
 
-    msg_info "Updating and rebuilding ${APP} to v${RELEASE} (Patience)"
+    msg_info "Updating Nodejs"
+    $STD apt update
+    $STD apt upgrade nodejs -y
+    msg_ok "Updated Nodejs"
+
+    NODE_VERSION=$(curl -s https://raw.githubusercontent.com/homarr-labs/homarr/dev/package.json | jq -r '.engines.node | split(">=")[1] | split(".")[0]')
+    NODE_MODULE="pnpm@$(curl -s https://raw.githubusercontent.com/homarr-labs/homarr/dev/package.json | jq -r '.packageManager | split("@")[1]')"
+    setup_nodejs
+
+    rm -rf /opt/homarr
+    fetch_and_deploy_gh_release "homarr" "homarr-labs/homarr"
+
+    msg_info "Updating and rebuilding ${APP} (Patience)"
     rm /opt/run_homarr.sh
     cat <<'EOF' >/opt/run_homarr.sh
 #!/bin/bash
@@ -101,6 +113,7 @@ source /opt/homarr/.env
 set +a
 export DB_DIALECT='sqlite'
 export AUTH_SECRET=$(openssl rand -base64 32)
+export CRON_JOB_API_KEY=$(openssl rand -base64 32)
 node /opt/homarr_db/migrations/$DB_DIALECT/migrate.cjs /opt/homarr_db/migrations/$DB_DIALECT
 for dir in $(find /opt/homarr_db/migrations/migrations -mindepth 1 -maxdepth 1 -type d); do
   dirname=$(basename "$dir")
@@ -117,12 +130,6 @@ node apps/nextjs/server.js & PID=$!
 wait $PID
 EOF
     chmod +x /opt/run_homarr.sh
-    $STD command -v jq || $STD apt-get update && $STD apt-get install -y jq
-    NODE_VERSION=$(curl -s https://raw.githubusercontent.com/homarr-labs/homarr/dev/package.json | jq -r '.engines.node | split(">=")[1] | split(".")[0]')
-    NODE_MODULE="pnpm@$(curl -s https://raw.githubusercontent.com/homarr-labs/homarr/dev/package.json | jq -r '.packageManager | split("@")[1]')"
-    install_node_and_modules
-    rm -rf /opt/homarr
-    fetch_and_deploy_gh_release "homarr-labs/homarr"
     mv /opt/homarr-data-backup/.env /opt/homarr/.env
     cd /opt/homarr
     $STD pnpm install --recursive --frozen-lockfile --shamefully-hoist
@@ -144,7 +151,6 @@ EOF
 
     mkdir /opt/homarr/build
     cp ./node_modules/better-sqlite3/build/Release/better_sqlite3.node ./build/better_sqlite3.node
-    echo "${RELEASE}" >/opt/${APP}_version.txt
     msg_ok "Updated ${APP}"
 
     msg_info "Starting Services"
@@ -155,8 +161,6 @@ EOF
     if [[ "$choice" =~ ^[Yy]$ ]]; then
       reboot
     fi
-  else
-    msg_ok "No update required. ${APP} is already at v${RELEASE}"
   fi
   exit
 }

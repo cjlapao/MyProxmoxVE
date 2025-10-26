@@ -9,7 +9,7 @@
   "updateable": true,
   "privileged": false,
   "interface_port": 9090,
-  "documentation": null,
+  "documentation": "https://prometheus.io/docs/introduction/overview/",
   "website": "https://prometheus.io/",
   "logo": "https://cdn.jsdelivr.net/gh/selfhst/icons/webp/prometheus.webp",
   "config_path": "/etc/prometheus/prometheus.yml",
@@ -23,7 +23,7 @@
         "ram": 2048,
         "hdd": 4,
         "os": "debian",
-        "version": "12"
+        "version": "13"
       }
     },
     {
@@ -34,7 +34,7 @@
         "ram": 256,
         "hdd": 1,
         "os": "alpine",
-        "version": "3.21"
+        "version": "3.22"
       }
     }
   ],

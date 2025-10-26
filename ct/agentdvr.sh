@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/MyProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 tteck
 # Author: tteck (tteckster)
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -11,7 +11,7 @@ var_cpu="${var_cpu:-2}"
 var_ram="${var_ram:-2048}"
 var_disk="${var_disk:-8}"
 var_os="${var_os:-ubuntu}"
-var_version="${var_version:-22.04}"
+var_version="${var_version:-24.04}"
 var_unprivileged="${var_unprivileged:-0}"
 
 header_info "$APP"
@@ -27,7 +27,30 @@ function update_script() {
     msg_error "No ${APP} Installation Found!"
     exit
   fi
-  msg_error "Currently we don't provide an update function for this ${APP}."
+  
+  RELEASE=$(curl -fsSL "https://www.ispyconnect.com/api/Agent/DownloadLocation4?platform=Linux64&fromVersion=0" | grep -o 'https://.*\.zip')
+  if [[ "${RELEASE}" != "$(cat ~/.agentdvr 2>/dev/null)" ]] || [[ ! -f ~/.agentdvr ]]; then
+    msg_info "Stopping service"
+    systemctl stop AgentDVR
+    msg_ok "Service stopped"
+
+    msg_info "Updating $APP"
+    cd /opt/agentdvr/agent
+    curl -fsSL "$RELEASE" -o $(basename "$RELEASE")
+    $STD unzip -o Agent_Linux64*.zip
+    chmod +x ./Agent
+    echo $RELEASE > ~/.agentdvr
+    rm -rf Agent_Linux64*.zip
+    msg_ok "Updated $APP"
+
+    msg_info "Starting service"
+    systemctl start AgentDVR
+    msg_ok "Service started"
+
+    msg_ok "Updated $APP successfully"
+  else
+    msg_ok "No update required. ${APP} is already at ${RELEASE}"
+  fi
   exit
 }
 

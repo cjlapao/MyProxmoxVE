@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/MyProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 community-scripts ORG
 # Author: bvdberg01
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -11,7 +11,7 @@ var_cpu="${var_cpu:-2}"
 var_ram="${var_ram:-1024}"
 var_disk="${var_disk:-8}"
 var_os="${var_os:-debian}"
-var_version="${var_version:-12}"
+var_version="${var_version:-13}"
 var_unprivileged="${var_unprivileged:-1}"
 
 header_info "$APP"
@@ -34,13 +34,13 @@ function update_script() {
     msg_ok "Stopped Service"
 
     msg_info "Updating $APP to v${RELEASE}"
-    cd /opt || exit
+    cd /opt
     mv /opt/partdb/ /opt/partdb-backup
     curl -fsSL "https://github.com/Part-DB/Part-DB-server/archive/refs/tags/v${RELEASE}.zip" -o $(basename "https://github.com/Part-DB/Part-DB-server/archive/refs/tags/v${RELEASE}.zip")
-    unzip -q "v${RELEASE}.zip"
-    mv /opt/Part-DB-server-"${RELEASE}"/ /opt/partdb
+    $STD unzip "v${RELEASE}.zip"
+    mv /opt/Part-DB-server-${RELEASE}/ /opt/partdb
 
-    cd /opt/partdb/ || exit
+    cd /opt/partdb/
     cp -r "/opt/partdb-backup/.env.local" /opt/partdb/
     cp -r "/opt/partdb-backup/public/media" /opt/partdb/public/
     cp -r "/opt/partdb-backup/config/banner.md" /opt/partdb/config/

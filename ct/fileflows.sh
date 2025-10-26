@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/MyProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 community-scripts ORG
 # Author: kkroboth
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -47,7 +47,7 @@ function update_script() {
     msg_info "Updating $APP to latest version"
     temp_file=$(mktemp)
     curl -fsSL https://fileflows.com/downloads/zip -o "$temp_file"
-    unzip -oq -d /opt/fileflows "$temp_file"
+    $STD unzip -o -d /opt/fileflows "$temp_file"
     msg_ok "Updated $APP to latest version"
 
     msg_info "Starting $APP"

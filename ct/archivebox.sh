@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/MyProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 tteck
 # Author: tteck
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -27,19 +27,28 @@ function update_script() {
     msg_error "No ${APP} Installation Found!"
     exit
   fi
-  msg_info "Stopping ${APP}"
+
+  NODE_VERSION="22" setup_nodejs
+  PYTHON_VERSION="3.13" setup_uv
+
+  msg_info "Stopping ArchiveBox"
   systemctl stop archivebox
-  msg_ok "Stopped ${APP}"
+  msg_ok "Stopped ArchiveBox"
 
-  msg_info "Updating ${APP}"
-  cd /opt/archivebox/data || exit
-  pip install --upgrade --ignore-installed archivebox
+  msg_info "Upgrading Playwright"
+  $STD uv pip install playwright --system
+  $STD playwright install-deps chromium
+  msg_ok "Upgraded Playwright"
+
+  msg_info "Updating ArchiveBox"
+  cd /opt/archivebox/data
+  $STD uv pip install --system --upgrade --no-reinstall archivebox
   sudo -u archivebox archivebox init
-  msg_ok "Updated ${APP}"
+  msg_ok "Updated ArchiveBox"
 
-  msg_info "Starting ${APP}"
+  msg_info "Starting ArchiveBox"
   systemctl start archivebox
-  msg_ok "Started ${APP}"
+  msg_ok "Started ArchiveBox"
 
   msg_ok "Updated Successfully"
   exit

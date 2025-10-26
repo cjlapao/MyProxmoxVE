@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/MyProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 community-scripts ORG
 # Author: MrYadro
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -11,7 +11,7 @@ var_cpu="${var_cpu:-1}"
 var_ram="${var_ram:-512}"
 var_disk="${var_disk:-2}"
 var_os="${var_os:-debian}"
-var_version="${var_version:-12}"
+var_version="${var_version:-13}"
 var_unprivileged="${var_unprivileged:-1}"
 
 header_info "$APP"
@@ -27,14 +27,19 @@ function update_script() {
     msg_error "No ${APP} Installation Found!"
     exit
   fi
+  if check_for_gh_release "recyclarr" "recyclarr/recyclarr"; then
 
-  msg_info "Updating ${APP}"
-  curl -fsSL "$(curl -fsSL https://api.github.com/repos/recyclarr/recyclarr/releases/latest | grep download | grep linux-x64 | cut -d\" -f4)" -o $(basename "$(curl -fsSL https://api.github.com/repos/recyclarr/recyclarr/releases/latest | grep download | grep linux-x64 | cut -d\" -f4)")
-  tar -C /usr/local/bin -xJf recyclarr*.tar.xz
-  rm -rf recyclarr*.tar.xz
-  msg_ok "Updated ${APP}"
+    msg_info "Stopping Service"
+    systemctl stop recyclarr
+    msg_ok "Stopped Service"
 
-  msg_ok "Updated Successfully"
+    fetch_and_deploy_gh_release "recyclarr" "recyclarr/recyclarr" "prebuild" "latest" "/usr/local/bin" "recyclarr-linux-x64.tar.xz"
+
+    msg_info "Starting Service"
+    systemctl start recyclarr
+    msg_ok "Started Service"
+    msg_ok "Updated Successfully"
+  fi
   exit
 }
 

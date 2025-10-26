@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/MyProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 tteck
 # Author: tteck (tteckster)
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -27,14 +27,19 @@ function update_script() {
     msg_error "No ${APP} Installation Found!"
     exit
   fi
-  msg_info "Updating $APP"
-  systemctl stop go2rtc
-  cd /opt/go2rtc || exit
-  rm go2rtc_linux_amd64
-  curl -fsSL "https://github.com/AlexxIT/go2rtc/releases/latest/download/go2rtc_linux_amd64" -o $(basename "https://github.com/AlexxIT/go2rtc/releases/latest/download/go2rtc_linux_amd64")
-  chmod +x go2rtc_linux_amd64
-  systemctl start go2rtc
-  msg_ok "Updated $APP"
+
+  if check_for_gh_release "go2rtc" "AlexxIT/go2rtc"; then
+    msg_info "Stopping service"
+    systemctl stop go2rtc
+    msg_ok "Stopped service"
+
+    fetch_and_deploy_gh_release "go2rtc" "AlexxIT/go2rtc" "singlefile" "latest" "/opt/go2rtc" "go2rtc_linux_amd64"
+
+    msg_info "Starting service"
+    systemctl start go2rtc
+    msg_ok "Started service"
+    msg_ok "Updated Successfully"
+  fi
   exit
 }
 

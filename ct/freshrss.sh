@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/MyProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 community-scripts ORG
 # Author: bvdberg01
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -20,15 +20,23 @@ color
 catch_errors
 
 function update_script() {
-  header_info
-  check_container_storage
-  check_container_resources
-  if [[ ! -d /opt/freshrss ]]; then
-    msg_error "No ${APP} Installation Found!"
-    exit
-  fi
-  msg_error "FreshRSS should be updated via the user interface."
-  exit
+    header_info
+    check_container_storage
+    check_container_resources
+    if [[ ! -d /opt/freshrss ]]; then
+        msg_error "No ${APP} Installation Found!"
+        exit
+    fi
+
+    if [ ! -x /opt/freshrss/cli/sensitive-log.sh ]; then
+        msg_info "Fixing wrong permissions"
+        chmod +x /opt/freshrss/cli/sensitive-log.sh
+        systemctl restart apache2
+        msg_ok "Fixed wrong permissions"
+    else
+        msg_error "FreshRSS should be updated via the user interface."
+        exit
+    fi
 }
 
 start

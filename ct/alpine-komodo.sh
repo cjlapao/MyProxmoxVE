@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/MyProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 community-scripts ORG
 # Author: MickLesk (CanbiZ)
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -11,7 +11,7 @@ var_cpu="${var_cpu:-1}"
 var_ram="${var_ram:-1024}"
 var_disk="${var_disk:-10}"
 var_os="${var_os:-alpine}"
-var_version="${var_version:-3.21}"
+var_version="${var_version:-3.22}"
 var_unprivileged="${var_unprivileged:-1}"
 
 header_info "$APP"
@@ -32,6 +32,15 @@ function update_script() {
     exit 1
   fi
   COMPOSE_BASENAME=$(basename "$COMPOSE_FILE")
+
+  if [[ "$COMPOSE_BASENAME" == "sqlite.compose.yaml" || "$COMPOSE_BASENAME" == "postgres.compose.yaml" ]]; then
+    msg_error "❌ Detected outdated Komodo setup using SQLite or PostgreSQL (FerretDB v1)."
+    echo -e "${YW}This configuration is no longer supported since Komodo v1.18.0.${CL}"
+    echo -e "${YW}Please follow the migration guide:${CL}"
+    echo -e "${BGN}https://github.com/community-scripts/ProxmoxVE/discussions/5689${CL}\n"
+    exit 1
+  fi
+
   BACKUP_FILE="/opt/komodo/${COMPOSE_BASENAME}.bak_$(date +%Y%m%d_%H%M%S)"
   cp "$COMPOSE_FILE" "$BACKUP_FILE" || {
     msg_error "Failed to create backup of ${COMPOSE_BASENAME}!"

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/MyProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 community-scripts ORG
-# Author: tremor021
+# Author: Slaviša Arežina (tremor021)
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
 # Source: https://github.com/YuukanOO/seelf
 
@@ -11,7 +11,7 @@ var_cpu="${var_cpu:-2}"
 var_ram="${var_ram:-4096}"
 var_disk="${var_disk:-10}"
 var_os="${var_os:-debian}"
-var_version="${var_version:-12}"
+var_version="${var_version:-13}"
 var_unprivileged="${var_unprivileged:-1}"
 
 header_info "$APP"
@@ -28,39 +28,20 @@ function update_script() {
     msg_error "No ${APP} Installation Found!"
     exit
   fi
-
-  RELEASE=$(curl -fsSL https://api.github.com/repos/YuukanOO/seelf/releases/latest | grep "tag_name" | awk '{print substr($2, 3, length($2)-4) }')
-  if [[ "${RELEASE}" != "$(cat /opt/${APP}_version.txt)" ]] || [[ ! -f /opt/${APP}_version.txt ]]; then
-    msg_info "Updating $APP"
-
+  if check_for_gh_release "seelf" "YuukanOO/seelf"; then
     msg_info "Stopping $APP"
     systemctl stop seelf
     msg_ok "Stopped $APP"
 
-    msg_info "Updating $APP to v${RELEASE}. Patience"
-    export PATH=$PATH:/usr/local/go/bin
-    source ~/.bashrc
-    curl -fsSL "https://github.com/YuukanOO/seelf/archive/refs/tags/v${RELEASE}.tar.gz" -o $(basename "https://github.com/YuukanOO/seelf/archive/refs/tags/v${RELEASE}.tar.gz")
-    tar -xzf v"${RELEASE}".tar.gz
-    cp -r seelf-"${RELEASE}"/ /opt/seelf
-    cd /opt/seelf || exit
+    msg_info "Updating $APP"
+    cd /opt/seelf
     $STD make build
-    msg_ok "Updated $APP to v${RELEASE}"
+    msg_ok "Updated $APP"
 
     msg_info "Starting $APP"
     systemctl start seelf
     msg_ok "Started $APP"
-
-    # Cleaning up
-    msg_info "Cleaning Up"
-    rm -f ~/*.tar.gz
-    rm -rf ~/seelf-"${RELEASE}"
-    msg_ok "Cleanup Completed"
-
-    echo "${RELEASE}" >/opt/${APP}_version.txt
-    msg_ok "Update Successful"
-  else
-    msg_ok "No update required. ${APP} is already at v${RELEASE}"
+    msg_ok "Update Successfully"
   fi
   exit
 }

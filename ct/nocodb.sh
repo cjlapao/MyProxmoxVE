@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/MyProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 tteck
 # Author: tteck (tteckster)
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -11,7 +11,7 @@ var_cpu="${var_cpu:-1}"
 var_ram="${var_ram:-1024}"
 var_disk="${var_disk:-4}"
 var_os="${var_os:-debian}"
-var_version="${var_version:-12}"
+var_version="${var_version:-13}"
 var_unprivileged="${var_unprivileged:-1}"
 
 header_info "$APP"
@@ -27,14 +27,18 @@ function update_script() {
     msg_error "No ${APP} Installation Found!"
     exit
   fi
-  msg_info "Updating ${APP}"
-  systemctl stop nocodb.service
-  cd /opt/nocodb || exit
-  rm -rf nocodb
-  curl -fsSL http://get.nocodb.com/linux-x64 -o nocodb -L
-  chmod +x nocodb
-  systemctl start nocodb.service
-  msg_ok "Updated Successfully"
+  if check_for_gh_release "nocodb" "nocodb/nocodb"; then
+    msg_info "Stopping Service"
+    systemctl stop nocodb
+    msg_ok "Stopped Service"
+
+    fetch_and_deploy_gh_release "nocodb" "nocodb/nocodb" "singlefile" "latest" "/opt/nocodb/" "Noco-linux-x64"
+
+    msg_info "Starting Service"
+    systemctl start nocodb
+    msg_ok "Started Service"
+    msg_ok "Updated Successfully"
+  fi
   exit
 }
 

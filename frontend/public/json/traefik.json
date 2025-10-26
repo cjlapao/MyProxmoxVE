@@ -9,7 +9,7 @@
   "updateable": true,
   "privileged": false,
   "interface_port": 8080,
-  "documentation": null,
+  "documentation": "https://doc.traefik.io/",
   "website": "https://traefik.io/",
   "logo": "https://cdn.jsdelivr.net/gh/selfhst/icons/webp/traefik.webp",
   "config_path": "/etc/traefik/traefik.yaml",
@@ -23,7 +23,7 @@
         "ram": 512,
         "hdd": 2,
         "os": "debian",
-        "version": "12"
+        "version": "13"
       }
     },
     {
@@ -34,7 +34,7 @@
         "ram": 512,
         "hdd": 1,
         "os": "alpine",
-        "version": "3.21"
+        "version": "3.22"
       }
     }
   ],

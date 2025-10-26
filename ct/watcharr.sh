@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/MyProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 community-scripts ORG
 # Author: Slaviša Arežina (tremor021)
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -11,7 +11,7 @@ var_cpu="${var_cpu:-1}"
 var_ram="${var_ram:-1024}"
 var_disk="${var_disk:-4}"
 var_os="${var_os:-debian}"
-var_version="${var_version:-12}"
+var_version="${var_version:-13}"
 var_unprivileged="${var_unprivileged:-1}"
 
 header_info "$APP"
@@ -27,45 +27,31 @@ function update_script() {
     msg_error "No ${APP} Installation Found!"
     exit
   fi
-  RELEASE=$(curl -fsSL https://api.github.com/repos/sbondCo/Watcharr/releases/latest | grep "tag_name" | awk '{print substr($2, 3, length($2)-4) }')
-  if [[ "${RELEASE}" != "$(cat /opt/${APP}_version.txt)" ]] || [[ ! -f /opt/${APP}_version.txt ]]; then
-    msg_info "Updating $APP"
 
-    msg_info "Stopping $APP"
+  if check_for_gh_release "watcharr" "sbondCo/Watcharr"; then
+    msg_info "Stopping Service"
     systemctl stop watcharr
-    msg_ok "Stopped $APP"
+    msg_ok "Stopped Service"
 
-    msg_info "Updating $APP to v${RELEASE}"
-    temp_file=$(mktemp)
-    temp_folder=$(mktemp -d)
-    curl -fsSL "https://github.com/sbondCo/Watcharr/archive/refs/tags/v${RELEASE}.tar.gz" -o """$temp_file"""
-    tar -xzf "$temp_file" -C "$temp_folder"
     rm -f /opt/watcharr/server/watcharr
     rm -rf /opt/watcharr/server/ui
-    cp -rf "${temp_folder}"/Watcharr-"${RELEASE}"/* /opt/watcharr
+    fetch_and_deploy_gh_release "watcharr" "sbondCo/Watcharr" "tarball"
+
+    msg_info "Updating Watcharr"
     cd /opt/watcharr || exit
     export GOOS=linux
     $STD npm i
     $STD npm run build
     mv ./build ./server/ui
     cd server || exit
-    go mod download
-    go build -o ./watcharr
-    msg_ok "Updated $APP to v${RELEASE}"
+    $STD go mod download
+    $STD go build -o ./watcharr
+    msg_ok "Updated Watcharr"
 
-    msg_info "Starting $APP"
+    msg_info "Starting Service"
     systemctl start watcharr
-    msg_ok "Started $APP"
-
-    msg_info "Cleaning Up"
-    rm -f "${temp_file}"
-    rm -rf "${temp_folder}"
-    msg_ok "Cleanup Completed"
-
-    echo "${RELEASE}" >/opt/${APP}_version.txt
-    msg_ok "Update Successful"
-  else
-    msg_ok "No update required. ${APP} is already at v${RELEASE}"
+    msg_ok "Started Service"
+    msg_ok "Update Successfully!"
   fi
   exit
 }

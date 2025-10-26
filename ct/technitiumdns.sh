@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/MyProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 tteck
 # Author: tteck (tteckster)
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -27,17 +27,20 @@ function update_script() {
     msg_error "No ${APP} Installation Found!"
     exit
   fi
-  msg_info "Updating ${APP}"
 
-  if ! dpkg -s aspnetcore-runtime-8.0 >/dev/null 2>&1; then
-    curl -fsSL "https://packages.microsoft.com/config/debian/12/packages-microsoft-prod.deb" -o $(basename "https://packages.microsoft.com/config/debian/12/packages-microsoft-prod.deb")
-    $STD dpkg -i packages-microsoft-prod.deb
-    $STD apt-get update
-    $STD apt-get install -y aspnetcore-runtime-8.0
-    rm packages-microsoft-prod.deb
+  RELEASE=$(curl -fsSL https://technitium.com/dns/ | grep -oP 'Version \K[\d.]+')
+  if [[ ! -f ~/.technitium || "${RELEASE}" != "$(cat ~/.technitium)" ]]; then
+    msg_info "Updating Technitium DNS"
+    curl -fsSL "https://download.technitium.com/dns/DnsServerPortable.tar.gz" -o /opt/DnsServerPortable.tar.gz
+    $STD tar zxvf /opt/DnsServerPortable.tar.gz -C /opt/technitium/dns/
+    msg_ok "Updated Technitium DNS"
+
+    msg_info "Cleaning up"
+    rm -f /opt/DnsServerPortable.tar.gz
+    msg_ok "Cleaned up"
+  else
+    msg_ok "No update required.  Technitium DNS is already at v${RELEASE}."
   fi
-  $STD bash <(curl -fsSL https://download.technitium.com/dns/install.sh)
-  msg_ok "Updated Successfully"
   exit
 }
 

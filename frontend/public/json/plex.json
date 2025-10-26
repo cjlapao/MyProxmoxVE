@@ -23,7 +23,7 @@
         "ram": 2048,
         "hdd": 8,
         "os": "ubuntu",
-        "version": "22.04"
+        "version": "24.04"
       }
     }
   ],
@@ -35,10 +35,6 @@
     {
       "text": "With Privileged/Unprivileged Hardware Acceleration Support",
       "type": "info"
-    },
-    {
-      "text": "WARNING: Installation sources scripts outside of Community Scripts repo. Please check the source before installing.",
-      "type": "warning"
     }
   ]
 }

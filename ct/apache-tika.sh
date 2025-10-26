@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/MyProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 community-scripts ORG
 # Author: Andy Grunwald (andygrunwald)
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -29,21 +29,21 @@ function update_script() {
   fi
   RELEASE="$(curl -fsSL https://dlcdn.apache.org/tika/ | grep -oP '(?<=href=")[0-9]+\.[0-9]+\.[0-9]+(?=/")' | sort -V | tail -n1)"
   if [[ ! -f /opt/${APP}_version.txt ]] || [[ "${RELEASE}" != "$(cat /opt/${APP}_version.txt)" ]]; then
-    msg_info "Stopping ${APP}"
+    msg_info "Stopping Service"
     systemctl stop apache-tika
-    msg_ok "Stopped ${APP}"
+    msg_ok "Stopped Service"
 
     msg_info "Updating ${APP} to v${RELEASE}"
-    cd /opt/apache-tika || exit
-    curl -fsSL -o tika-server-standard-"${RELEASE}".jar "https://dlcdn.apache.org/tika/${RELEASE}/tika-server-standard-${RELEASE}.jar"
+    cd /opt/apache-tika
+    curl -fsSL -o tika-server-standard-${RELEASE}.jar "https://dlcdn.apache.org/tika/${RELEASE}/tika-server-standard-${RELEASE}.jar"
     mv --force tika-server-standard.jar tika-server-standard-prev-version.jar
-    mv tika-server-standard-"${RELEASE}".jar tika-server-standard.jar
+    mv tika-server-standard-${RELEASE}.jar tika-server-standard.jar
     echo "${RELEASE}" >/opt/${APP}_version.txt
     msg_ok "Updated ${APP} to v${RELEASE}"
 
-    msg_info "Starting ${APP}"
+    msg_info "Starting Service"
     systemctl start apache-tika
-    msg_ok "Started ${APP}"
+    msg_ok "Started Service"
     msg_info "Cleaning Up"
     rm -rf /opt/apache-tika/tika-server-standard-prev-version.jar
     msg_ok "Cleanup Completed"

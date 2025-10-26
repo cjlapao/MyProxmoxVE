@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/MyProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 tteck
 # Author: tteck (tteckster)
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -11,7 +11,7 @@ var_cpu="${var_cpu:-2}"
 var_ram="${var_ram:-2048}"
 var_disk="${var_disk:-10}"
 var_os="${var_os:-debian}"
-var_version="${var_version:-12}"
+var_version="${var_version:-13}"
 var_unprivileged="${var_unprivileged:-1}"
 
 header_info "$APP"
@@ -27,19 +27,21 @@ function update_script() {
     msg_error "No ${APP} Installation Found!"
     exit
   fi
-  RELEASE=$(curl -fsSL https://api.github.com/repos/Requarks/wiki/releases/latest | grep "tag_name" | awk '{print substr($2, 3, length($2)-4) }')
-  if [[ "${RELEASE}" != "$(cat /opt/${APP}_version.txt)" ]] || [[ ! -f /opt/${APP}_version.txt ]]; then
+
+  NODE_VERSION="22" NODE_MODULE="yarn,node-gyp" setup_nodejs
+
+  if check_for_gh_release "wikijs" "requarks/wiki"; then
     msg_info "Verifying whether ${APP}' new release is v3.x+ and current install uses SQLite."
     SQLITE_INSTALL=$([ -f /opt/wikijs/db.sqlite ] && echo "true" || echo "false")
-    if [[ "${SQLITE_INSTALL}" == "true" && "${RELEASE}" =~ ^3.* ]]; then
+    if [[ "${SQLITE_INSTALL}" == "true" && "${CHECK_UPDATE_RELEASE}" =~ ^3.* ]]; then
       echo "SQLite is not supported in v3.x+, currently there is no update path availble."
       exit
     fi
-    msg_ok "There is an update path available for ${APP} to v${RELEASE}"
+    msg_ok "There is an update path available for ${APP}"
 
-    msg_info "Stopping ${APP}"
+    msg_info "Stopping Service"
     systemctl stop wikijs
-    msg_ok "Stopped ${APP}"
+    msg_ok "Stopped Service"
 
     msg_info "Backing up Data"
     mkdir /opt/wikijs-backup
@@ -47,29 +49,21 @@ function update_script() {
     cp -R /opt/wikijs/{config.yml,/data} /opt/wikijs-backup
     msg_ok "Backed up Data"
 
-    msg_info "Updating ${APP}"
-    rm -rf /opt/wikijs/*
-    cd /opt/wikijs || exit
-    curl -fsSL "https://github.com/requarks/wiki/releases/download/v${RELEASE}/wiki-js.tar.gz" -o $(basename "https://github.com/requarks/wiki/releases/download/v${RELEASE}/wiki-js.tar.gz")
-    tar -xzf wiki-js.tar.gz
-    msg_ok "Updated ${APP}"
+    CLEAN_INSTALL=1 fetch_and_deploy_gh_release "wikijs" "requarks/wiki" "prebuild" "latest" "/opt/wikijs" "wiki-js.tar.gz"
 
     msg_info "Restoring Data"
     cp -R /opt/wikijs-backup/* /opt/wikijs
     $SQLITE_INSTALL && $STD npm rebuild sqlite3
     msg_ok "Restored Data"
 
-    msg_info "Starting ${APP}"
+    msg_info "Starting Service"
     systemctl start wikijs
-    msg_ok "Started ${APP}"
+    msg_ok "Started Service"
 
     msg_info "Cleaning Up"
-    rm -rf /opt/wikijs/wiki-js.tar.gz
     rm -rf /opt/wikijs-backup
     msg_ok "Cleanup Completed"
-    msg_ok "Updated Successfully"
-  else
-    msg_ok "No update required. ${APP} is already at v${RELEASE}"
+    msg_ok "Updated Successfully!"
   fi
   exit
 }

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/MyProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 community-scripts ORG
 # Author: Jakub Matraszek (jmatraszek)
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -20,26 +20,26 @@ color
 catch_errors
 
 function update_script() {
-  header_info
-  check_container_storage
-  check_container_resources
+    header_info
+    check_container_storage
+    check_container_resources
 
-  if command -v cross-seed &>/dev/null; then
-    current_version=$(cross-seed --version)
-    latest_version=$(npm show cross-seed version)
-    if [ "$current_version" != "$latest_version" ]; then
-      msg_info "Updating ${APP} from version v${current_version} to v${latest_version}"
-      $STD npm install -g cross-seed@latest
-      systemctl restart cross-seed
-      msg_ok "Updated Successfully"
+    if command -v cross-seed &>/dev/null; then
+        current_version=$(cross-seed --version)
+        latest_version=$(npm show cross-seed version)
+        if [ "$current_version" != "$latest_version" ]; then
+            msg_info "Updating ${APP} from version v${current_version} to v${latest_version}"
+            $STD npm install -g cross-seed@latest
+            systemctl restart cross-seed
+            msg_ok "Updated Successfully"
+        else
+            msg_ok "${APP} is already at v${current_version}"
+        fi
     else
-      msg_ok "${APP} is already at v${current_version}"
+        msg_error "No ${APP} Installation Found!"
+        exit
     fi
-  else
-    msg_error "No ${APP} Installation Found!"
     exit
-  fi
-  exit
 }
 
 start

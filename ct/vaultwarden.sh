@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/MyProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 tteck
 # Author: tteck (tteckster)
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -9,9 +9,9 @@ APP="Vaultwarden"
 var_tags="${var_tags:-password-manager}"
 var_cpu="${var_cpu:-4}"
 var_ram="${var_ram:-6144}"
-var_disk="${var_disk:-6}"
+var_disk="${var_disk:-20}"
 var_os="${var_os:-debian}"
-var_version="${var_version:-12}"
+var_version="${var_version:-13}"
 var_unprivileged="${var_unprivileged:-1}"
 
 header_info "$APP"
@@ -42,9 +42,9 @@ function update_script() {
     3>&1 1>&2 2>&3)
 
   if [ "$UPD" == "1" ]; then
-    msg_info "Stopping Vaultwarden"
-    systemctl stop vaultwarden.service
-    msg_ok "Stopped Vaultwarden"
+    msg_info "Stopping Service"
+    systemctl stop vaultwarden
+    msg_ok "Stopped Service"
 
     msg_info "Updating VaultWarden to $VAULT (Patience)"
     cd ~ && rm -rf vaultwarden
@@ -63,17 +63,17 @@ function update_script() {
     cd ~ && rm -rf vaultwarden
     msg_ok "Cleaned"
 
-    msg_info "Starting Vaultwarden"
-    systemctl start vaultwarden.service
-    msg_ok "Started Vaultwarden"
+    msg_info "Starting Service"
+    systemctl start vaultwarden
+    msg_ok "Started Service"
 
     msg_ok "$VAULT Update Successful"
     exit
   fi
   if [ "$UPD" == "2" ]; then
-    msg_info "Stopping Vaultwarden"
-    systemctl stop vaultwarden.service
-    msg_ok "Stopped Vaultwarden"
+    msg_info "Stopping Service"
+    systemctl stop vaultwarden
+    msg_ok "Stopped Service"
 
     msg_info "Updating Web-Vault to $WVRELEASE"
     $STD curl -fsSLO https://github.com/dani-garcia/bw_web_builds/releases/download/"$WVRELEASE"/bw_web_"$WVRELEASE".tar.gz
@@ -84,9 +84,9 @@ function update_script() {
     rm bw_web_"$WVRELEASE".tar.gz
     msg_ok "Cleaned"
 
-    msg_info "Starting Vaultwarden"
-    systemctl start vaultwarden.service
-    msg_ok "Started Vaultwarden"
+    msg_info "Starting Service"
+    systemctl start vaultwarden
+    msg_ok "Started Service"
     msg_ok "$WVRELEASE Update Successful"
     exit
   fi

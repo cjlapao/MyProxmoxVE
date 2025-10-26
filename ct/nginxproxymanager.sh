@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/MyProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 tteck
 # Author: tteck (tteckster)
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -11,7 +11,7 @@ var_cpu="${var_cpu:-2}"
 var_ram="${var_ram:-1024}"
 var_disk="${var_disk:-4}"
 var_os="${var_os:-debian}"
-var_version="${var_version:-12}"
+var_version="${var_version:-13}"
 var_unprivileged="${var_unprivileged:-1}"
 
 header_info "$APP"
@@ -27,15 +27,44 @@ function update_script() {
     msg_error "No ${APP} Installation Found!"
     exit
   fi
-  if ! command -v pnpm &>/dev/null; then
-    msg_info "Installing pnpm"
-    #export NODE_OPTIONS=--openssl-legacy-provider
-    $STD npm install -g pnpm@8.15
-    msg_ok "Installed pnpm"
+  
+  if command -v node &> /dev/null; then
+    CURRENT_NODE_VERSION=$(node --version | cut -d'v' -f2 | cut -d'.' -f1)
+    if [[ "$CURRENT_NODE_VERSION" != "22" ]]; then
+      systemctl stop openresty
+      apt-get purge -y nodejs npm
+      apt-get autoremove -y
+      rm -rf /usr/local/bin/node /usr/local/bin/npm
+      rm -rf /usr/local/lib/node_modules
+      rm -rf ~/.npm
+      rm -rf /root/.npm
+    fi
   fi
+
+  NODE_VERSION="22" NODE_MODULE="yarn" setup_nodejs
+  export NODE_OPTIONS="--openssl-legacy-provider"
+
   RELEASE=$(curl -fsSL https://api.github.com/repos/NginxProxyManager/nginx-proxy-manager/releases/latest |
     grep "tag_name" |
     awk '{print substr($2, 3, length($2)-4) }')
+
+  msg_info "Downloading NPM v${RELEASE}"
+  curl -fsSL "https://codeload.github.com/NginxProxyManager/nginx-proxy-manager/tar.gz/v${RELEASE}" | tar -xz
+  cd nginx-proxy-manager-"${RELEASE}" || exit
+  msg_ok "Downloaded NPM v${RELEASE}"
+
+  msg_info "Building Frontend"
+  (
+    sed -i "s|\"version\": \"0.0.0\"|\"version\": \"$RELEASE\"|" backend/package.json
+    sed -i "s|\"version\": \"0.0.0\"|\"version\": \"$RELEASE\"|" frontend/package.json
+    cd ./frontend || exit
+    # Replace node-sass with sass in package.json before installation
+    sed -i 's/"node-sass".*$/"sass": "^1.92.1",/g' package.json
+    $STD yarn install --network-timeout 600000
+    $STD yarn build
+  )
+  msg_ok "Built Frontend"
+
   msg_info "Stopping Services"
   systemctl stop openresty
   systemctl stop npm
@@ -50,18 +79,11 @@ function update_script() {
     "$STD" /var/cache/nginx
   msg_ok "Cleaned Old Files"
 
-  msg_info "Downloading NPM v${RELEASE}"
-  curl -fsSL "https://codeload.github.com/NginxProxyManager/nginx-proxy-manager/tar.gz/v${RELEASE}" | tar -xz
-  cd nginx-proxy-manager-"${RELEASE}"
-  msg_ok "Downloaded NPM v${RELEASE}"
-
-  msg_info "Setting up Enviroment"
+  msg_info "Setting up Environment"
   ln -sf /usr/bin/python3 /usr/bin/python
-  ln -sf /usr/bin/certbot /opt/certbot/bin/certbot
+  ln -sf /opt/certbot/bin/certbot /usr/local/bin/certbot
   ln -sf /usr/local/openresty/nginx/sbin/nginx /usr/sbin/nginx
   ln -sf /usr/local/openresty/nginx/ /etc/nginx
-  sed -i "s|\"version\": \"0.0.0\"|\"version\": \"$RELEASE\"|" backend/package.json
-  sed -i "s|\"version\": \"0.0.0\"|\"version\": \"$RELEASE\"|" frontend/package.json
   sed -i 's+^daemon+#daemon+g' docker/rootfs/etc/nginx/nginx.conf
   NGINX_CONFS=$(find "$(pwd)" -type f -name "*.conf")
   for NGINX_CONF in $NGINX_CONFS; do
@@ -97,19 +119,17 @@ function update_script() {
     $STD openssl req -new -newkey rsa:2048 -days 3650 -nodes -x509 -subj "/O=Nginx Proxy Manager/OU=Dummy Certificate/CN=localhost" -keyout /data/nginx/dummykey.pem -out /data/nginx/dummycert.pem
   fi
   mkdir -p /app/global /app/frontend/images
+  cp -r frontend/dist/* /app/frontend
+  cp -r frontend/app-images/* /app/frontend/images
   cp -r backend/* /app
   cp -r global/* /app/global
-  $STD python3 -m pip install --no-cache-dir certbot-dns-cloudflare
-  msg_ok "Setup Enviroment"
 
-  msg_info "Building Frontend"
-  cd ./frontend
-  $STD pnpm install
-  $STD pnpm upgrade
-  $STD pnpm run build
-  cp -r dist/* /app/frontend
-  cp -r app-images/* /app/frontend/images
-  msg_ok "Built Frontend"
+  # Update Certbot and plugins in virtual environment
+  if [ -d /opt/certbot ]; then
+    $STD /opt/certbot/bin/pip install --upgrade pip setuptools wheel
+    $STD /opt/certbot/bin/pip install --upgrade certbot certbot-dns-cloudflare
+  fi
+  msg_ok "Setup Environment"
 
   msg_info "Initializing Backend"
   $STD rm -rf /app/config/default.json
@@ -128,8 +148,9 @@ function update_script() {
 }
 EOF
   fi
-  cd /app
-  $STD pnpm install
+  cd /app || exit
+  export NODE_OPTIONS="--openssl-legacy-provider"
+  $STD yarn install --network-timeout 600000
   msg_ok "Initialized Backend"
 
   msg_info "Starting Services"

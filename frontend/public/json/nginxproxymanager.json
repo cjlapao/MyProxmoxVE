@@ -9,7 +9,7 @@
   "updateable": true,
   "privileged": false,
   "interface_port": 81,
-  "documentation": null,
+  "documentation": "https://nginxproxymanager.com/guide/",
   "website": "https://nginxproxymanager.com/",
   "logo": "https://cdn.jsdelivr.net/gh/selfhst/icons/webp/nginx-proxy-manager.webp",
   "config_path": "",
@@ -23,7 +23,7 @@
         "ram": 1024,
         "hdd": 4,
         "os": "debian",
-        "version": "12"
+        "version": "13"
       }
     }
   ],

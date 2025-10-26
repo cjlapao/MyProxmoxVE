@@ -6,7 +6,7 @@ source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/MyProxmoxVE/main/m
 # Source: https://github.com/bastienwirtz/homer
 
 APP="Empty"
-var_tags="${var_tags:-dashboard}"
+var_tags="${var_tags:-empty}"
 var_cpu="${var_cpu:-1}"
 var_ram="${var_ram:-512}"
 var_disk="${var_disk:-2}"

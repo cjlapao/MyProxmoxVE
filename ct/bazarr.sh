@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/MyProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 tteck
 # Author: tteck (tteckster)
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -27,13 +27,20 @@ function update_script() {
     msg_error "No ${APP} Installation Found!"
     exit
   fi
-  msg_info "Updating $APP LXC"
-  $STD apt-get update
-  $STD apt-get -y upgrade
-  msg_ok "Updated $APP LXC"
+  if check_for_gh_release "bazarr" "morpheus65535/bazarr"; then
+    PYTHON_VERSION="3.13" setup_uv
+    fetch_and_deploy_gh_release "bazarr" "morpheus65535/bazarr" "prebuild" "latest" "/opt/bazarr" "bazarr.zip"
+
+    msg_info "Setup Bazarr"
+    mkdir -p /var/lib/bazarr/
+    chmod 775 /opt/bazarr /var/lib/bazarr/
+    sed -i.bak 's/--only-binary=Pillow//g' /opt/bazarr/requirements.txt
+    $STD uv pip install -r /opt/bazarr/requirements.txt --system
+    msg_ok "Setup Bazarr"
+    msg_ok "Updated Successfully"
+  fi
   exit
 }
-
 start
 build_container
 description

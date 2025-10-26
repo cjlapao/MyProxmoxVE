@@ -34,7 +34,7 @@
         "ram": 1024,
         "hdd": 10,
         "os": "alpine",
-        "version": "3.21"
+        "version": "3.22"
       }
     }
   ],
@@ -44,7 +44,7 @@
   },
   "notes": [
     {
-      "text": "After the initial installation: Enter your desired admin user and password and then click on Sign Up",
+      "text": "For admin username and password type `cat ~/komodo.creds` inside LXC.",
       "type": "info"
     }
   ]

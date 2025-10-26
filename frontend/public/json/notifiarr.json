@@ -9,7 +9,7 @@
   "updateable": true,
   "privileged": false,
   "interface_port": 5454,
-  "documentation": null,
+  "documentation": "https://notifiarr.wiki/",
   "website": "https://notifiarr.com/",
   "logo": "https://cdn.jsdelivr.net/gh/selfhst/icons/webp/notifiarr.webp",
   "config_path": "/etc/notifiarr/notifiarr.conf",
@@ -23,7 +23,7 @@
         "ram": 512,
         "hdd": 2,
         "os": "debian",
-        "version": "12"
+        "version": "13"
       }
     }
   ],

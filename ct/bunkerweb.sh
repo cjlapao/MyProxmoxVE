@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/MyProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 tteck
 # Author: tteck (tteckster)
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -8,7 +8,7 @@ source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/MyProxmoxVE/main/m
 APP="BunkerWeb"
 var_tags="${var_tags:-webserver}"
 var_cpu="${var_cpu:-2}"
-var_ram="${var_ram:-4096}"
+var_ram="${var_ram:-8192}"
 var_disk="${var_disk:-4}"
 var_os="${var_os:-debian}"
 var_version="${var_version:-12}"
@@ -37,8 +37,8 @@ Pin: version ${RELEASE}
 Pin-Priority: 1001
 EOF
     apt-get update
-    apt-get install -y nginx=1.26.3*
-    apt-get install -y bunkerweb="${RELEASE}"
+    apt-mark unhold bunkerweb nginx
+    apt-get install -y --allow-downgrades bunkerweb=${RELEASE}
     echo "${RELEASE}" >/opt/${APP}_version.txt
     msg_ok "Updated ${APP} to ${RELEASE}"
 

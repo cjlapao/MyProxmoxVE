@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/MyProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 tteck
 # Author: tteck (tteckster)
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -29,10 +29,10 @@ function update_script() {
   fi
   RELEASE=$(curl -fsSL "https://api.github.com/repos/linuxserver/Heimdall/releases/latest" | awk '/tag_name/{print $4;exit}' FS='[""]')
   if [[ "${RELEASE}" != "$(cat /opt/${APP}_version.txt)" ]] || [[ ! -f /opt/${APP}_version.txt ]]; then
-    msg_info "Stopping ${APP}"
+    msg_info "Stopping Service"
     systemctl stop heimdall
     sleep 1
-    msg_ok "Stopped ${APP}"
+    msg_ok "Stopped Service"
     msg_info "Backing up Data"
     cp -R /opt/Heimdall/database database-backup
     cp -R /opt/Heimdall/public public-backup
@@ -43,14 +43,14 @@ function update_script() {
     tar xzf "${RELEASE}".tar.gz
     VER=$(curl -fsSL https://api.github.com/repos/linuxserver/Heimdall/releases/latest | grep "tag_name" | awk '{print substr($2, 3, length($2)-4) }')
     cp -R Heimdall-"${VER}"/* /opt/Heimdall
-    cd /opt/Heimdall || exit
+    cd /opt/Heimdall
     $STD apt-get install -y composer
     export COMPOSER_ALLOW_SUPERUSER=1
     $STD composer dump-autoload
     echo "${RELEASE}" >/opt/${APP}_version.txt
     msg_ok "Updated Heimdall Dashboard to ${RELEASE}"
     msg_info "Restoring Data"
-    cd ~ || exit
+    cd ~
     cp -R database-backup/* /opt/Heimdall/database
     cp -R public-backup/* /opt/Heimdall/public
     sleep 1
@@ -59,10 +59,10 @@ function update_script() {
     rm -rf {"${RELEASE}".tar.gz,Heimdall-"${VER}",public-backup,database-backup,Heimdall}
     sleep 1
     msg_ok "Cleaned"
-    msg_info "Starting ${APP}"
+    msg_info "Starting Service"
     systemctl start heimdall.service
     sleep 2
-    msg_ok "Started ${APP}"
+    msg_ok "Started Service"
     msg_ok "Updated Successfully"
   else
     msg_ok "No update required.  ${APP} is already at ${RELEASE}."

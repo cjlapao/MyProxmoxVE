@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/MyProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 community-scripts ORG
 # Author: MickLesk (CanbiZ)
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -34,7 +34,7 @@ function update_script() {
     exit 1
   fi
 
-  NODE_VERSION="22" NODE_MODULE="pnpm@latest" install_node_and_modules
+  NODE_VERSION="22" NODE_MODULE="pnpm@latest" setup_nodejs
   PROJECT_NAME=$(</opt/fumadocs/.projectname)
   PROJECT_DIR="/opt/fumadocs/${PROJECT_NAME}"
   SERVICE_NAME="fumadocs_${PROJECT_NAME}.service"
@@ -43,13 +43,16 @@ function update_script() {
     msg_error "Project directory does not exist: $PROJECT_DIR"
     exit 1
   fi
+  if ! command -v git &>/dev/null; then
+    $STD apt-get install -y git
+  fi
 
   msg_info "Stopping service $SERVICE_NAME"
   systemctl stop "$SERVICE_NAME"
   msg_ok "Stopped service $SERVICE_NAME"
 
   msg_info "Updating dependencies using pnpm"
-  cd "$PROJECT_DIR" || exit
+  cd "$PROJECT_DIR"
   $STD pnpm up --latest
   $STD pnpm build
   msg_ok "Updated dependencies using pnpm"

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/MyProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 tteck
 # Author: tteck (tteckster)
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -11,7 +11,7 @@ var_cpu="${var_cpu:-2}"
 var_ram="${var_ram:-2048}"
 var_disk="${var_disk:-16}"
 var_os="${var_os:-debian}"
-var_version="${var_version:-12}"
+var_version="${var_version:-13}"
 var_unprivileged="${var_unprivileged:-1}"
 
 header_info "$APP"
@@ -36,14 +36,14 @@ function update_script() {
 
   if [ "$UPD" == "1" ]; then
     msg_info "Updating ${APP} LXC"
-    $STD apt-get update
-    $STD apt-get -y upgrade
+    $STD apt update
+    $STD apt -y upgrade
     msg_ok "Updated Successfully"
 
     msg_info "Updating All Containers\n"
     CONTAINER_LIST="${1:-$(podman ps -q)}"
     for container in ${CONTAINER_LIST}; do
-      CONTAINER_IMAGE="$(podman inspect --format "{{.Config.Image}}" --type container "${container}")"
+      CONTAINER_IMAGE="$(podman inspect --format "{{.Config.Image}}" --type container ${container})"
       RUNNING_IMAGE="$(podman inspect --format "{{.Image}}" --type container "${container}")"
       podman pull "${CONTAINER_IMAGE}"
       LATEST_IMAGE="$(podman inspect --format "{{.Id}}" --type image "${CONTAINER_IMAGE}")"
@@ -58,8 +58,7 @@ function update_script() {
   if [ "$UPD" == "2" ]; then
     msg_info "Installing Home Assistant Community Store (HACS)"
     $STD apt update
-    $STD apt install unzip
-    cd /var/lib/containers/storage/volumes/hass_config/_data || exit
+    cd /var/lib/containers/storage/volumes/hass_config/_data
     $STD bash <(curl -fsSL https://get.hacs.xyz)
     msg_ok "Installed Home Assistant Community Store (HACS)"
     echo -e "\n Reboot Home Assistant and clear browser cache then Add HACS integration.\n"

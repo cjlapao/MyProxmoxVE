@@ -1,18 +1,18 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/MyProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 community-scripts ORG
 # Author: MickLesk (CanbiZ)
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
 # Source: https://actualbudget.org/
 
 APP="Actual Budget"
-var_tags="finance"
-var_cpu="2"
-var_ram="2048"
-var_disk="4"
-var_os="debian"
-var_version="12"
-var_unprivileged="1"
+var_tags="${var_tags:-finance}"
+var_cpu="${var_cpu:-2}"
+var_ram="${var_ram:-2048}"
+var_disk="${var_disk:-4}"
+var_os="${var_os:-debian}"
+var_version="${var_version:-13}"
+var_unprivileged="${var_unprivileged:-1}"
 
 header_info "$APP"
 variables
@@ -24,27 +24,26 @@ function update_script() {
   check_container_storage
   check_container_resources
 
-  if [[ ! -d /opt/actualbudget ]]; then
+  if [[ ! -f /opt/actualbudget_version.txt ]]; then
     msg_error "No ${APP} Installation Found!"
     exit
   fi
-  NODE_VERSION="22"
-  install_node_and_modules
+  NODE_VERSION="22" setup_nodejs
   RELEASE=$(curl -fsSL https://api.github.com/repos/actualbudget/actual/releases/latest | grep "tag_name" | awk '{print substr($2, 3, length($2)-4) }')
   if [[ -f /opt/actualbudget-data/config.json ]]; then
     if [[ ! -f /opt/actualbudget_version.txt ]] || [[ "${RELEASE}" != "$(cat /opt/actualbudget_version.txt)" ]]; then
-      msg_info "Stopping ${APP}"
+      msg_info "Stopping Service"
       systemctl stop actualbudget
-      msg_ok "${APP} Stopped"
+      msg_ok "Stopped Service"
 
       msg_info "Updating ${APP} to ${RELEASE}"
       $STD npm update -g @actual-app/sync-server
       echo "${RELEASE}" >/opt/actualbudget_version.txt
       msg_ok "Updated ${APP} to ${RELEASE}"
 
-      msg_info "Starting ${APP}"
+      msg_info "Starting Service"
       systemctl start actualbudget
-      msg_ok "Restarted ${APP}"
+      msg_ok "Started Service"
     else
       msg_info "${APP} is already up to date"
     fi

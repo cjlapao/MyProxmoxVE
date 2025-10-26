@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/MyProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 community-scripts ORG
 # Author: MickLesk (CanbiZ)
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -29,18 +29,18 @@ function update_script() {
   fi
   RELEASE=$(curl -fsSL https://api.github.com/repos/documenso/documenso/releases/latest | grep "tag_name" | awk '{print substr($2, 3, length($2)-4) }')
   if [[ ! -f /opt/${APP}_version.txt ]] || [[ "${RELEASE}" != "$(cat /opt/${APP}_version.txt)" ]]; then
-    msg_info "Stopping ${APP}"
+    msg_info "Stopping Service"
     systemctl stop documenso
-    msg_ok "${APP} Stopped"
+    msg_ok "Stopped Service"
 
     msg_info "Updating ${APP} to ${RELEASE}"
     cp /opt/documenso/.env /opt/
     rm -rf /opt/documenso
-    cd /opt || exit
-    curl -fsSL "https://github.com/documenso/documenso/archive/refs/tags/v${RELEASE}.zip" -o v"${RELEASE}".zip
-    unzip -q v"${RELEASE}".zip
-    mv documenso-"${RELEASE}" /opt/documenso
-    cd /opt/documenso || exit
+    cd /opt
+    curl -fsSL "https://github.com/documenso/documenso/archive/refs/tags/v${RELEASE}.zip" -o v${RELEASE}.zip
+    $STD unzip v${RELEASE}.zip
+    mv documenso-${RELEASE} /opt/documenso
+    cd /opt/documenso
     mv /opt/.env /opt/documenso/.env
     export TURBO_CACHE=1
     export NEXT_TELEMETRY_DISABLED=1
@@ -53,12 +53,12 @@ function update_script() {
     echo "${RELEASE}" >/opt/${APP}_version.txt
     msg_ok "Updated ${APP}"
 
-    msg_info "Starting ${APP}"
+    msg_info "Starting Service"
     systemctl start documenso
-    msg_ok "Started ${APP}"
+    msg_ok "Started Service"
 
     msg_info "Cleaning Up"
-    rm -rf /opt/v"${RELEASE}".zip
+    rm -rf /opt/v${RELEASE}.zip
     msg_ok "Cleaned"
     msg_ok "Updated Successfully"
   else

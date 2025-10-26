@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/MyProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 tteck
 # Author: tteck (tteckster)
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -20,19 +20,19 @@ color
 catch_errors
 
 function update_script() {
-  header_info
-  check_container_storage
-  check_container_resources
-  if [[ ! -f /etc/systemd/system/flowise.service ]]; then
-    msg_error "No ${APP} Installation Found!"
+    header_info
+    check_container_storage
+    check_container_resources
+    if [[ ! -f /etc/systemd/system/flowise.service ]]; then
+        msg_error "No ${APP} Installation Found!"
+        exit
+    fi
+    msg_info "Updating ${APP}"
+    systemctl stop flowise
+    npm install -g flowise --upgrade
+    systemctl start flowise
+    msg_ok "Updated ${APP}"
     exit
-  fi
-  msg_info "Updating ${APP}"
-  systemctl stop flowise
-  npm install -g flowise --upgrade
-  systemctl start flowise
-  msg_ok "Updated ${APP}"
-  exit
 }
 
 start

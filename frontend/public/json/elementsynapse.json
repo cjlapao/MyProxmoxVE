@@ -20,8 +20,8 @@
       "script": "ct/elementsynapse.sh",
       "resources": {
         "cpu": 1,
-        "ram": 1024,
-        "hdd": 4,
+        "ram": 2048,
+        "hdd": 8,
         "os": "debian",
         "version": "12"
       }
@@ -39,6 +39,10 @@
     {
       "type": "info",
       "text": "Synapse-Admin is running on port 5173"
+    },
+    {
+      "type": "info",
+      "text": "For bridges Installation methods (WhatsApp, Signal, Discord, etc.), see: ´https://docs.mau.fi/bridges/go/setup.html´"
     }
   ]
 }

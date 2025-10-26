@@ -9,7 +9,7 @@
   "updateable": true,
   "privileged": false,
   "interface_port": 3000,
-  "documentation": null,
+  "documentation": "https://mafl.hywax.space/reference/configuration.html",
   "website": "https://mafl.hywax.space/",
   "logo": "https://cdn.jsdelivr.net/gh/selfhst/icons/webp/mafl.webp",
   "config_path": "/opt/mafl/data/config.yml",
@@ -23,7 +23,7 @@
         "ram": 2048,
         "hdd": 6,
         "os": "debian",
-        "version": "12"
+        "version": "13"
       }
     }
   ],

@@ -9,7 +9,7 @@
   "updateable": true,
   "privileged": false,
   "interface_port": 12345,
-  "documentation": null,
+  "documentation": "https://tianji.dev/docs/intro",
   "website": "https://tianji.msgbyte.com/",
   "logo": "https://cdn.jsdelivr.net/gh/selfhst/icons/webp/tianji.webp",
   "config_path": "/opt/tianji/src/server/.env",
@@ -23,7 +23,7 @@
         "ram": 4096,
         "hdd": 12,
         "os": "debian",
-        "version": "12"
+        "version": "13"
       }
     }
   ],

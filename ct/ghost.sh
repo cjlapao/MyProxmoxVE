@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/MyProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 community-scripts ORG
 # Author: fabrice1236
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -23,8 +23,13 @@ function update_script() {
   header_info
   check_container_storage
   check_container_resources
-  msg_info "Updating ${APP} LXC"
 
+  if ! dpkg-query -W -f='${Status}' mariadb-server 2>/dev/null | grep -q "install ok installed"; then
+    setup_mysql
+  fi
+  NODE_VERSION="22" setup_nodejs
+
+  msg_info "Updating ${APP} LXC"
   if command -v ghost &>/dev/null; then
     current_version=$(ghost version | grep 'Ghost-CLI version' | awk '{print $3}')
     latest_version=$(npm show ghost-cli version)

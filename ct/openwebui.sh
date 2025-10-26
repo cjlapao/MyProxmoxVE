@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/MyProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 tteck
 # Author: havardthom
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -33,9 +33,17 @@ function update_script() {
     OLLAMA_VERSION=$(ollama -v | awk '{print $NF}')
     RELEASE=$(curl -s https://api.github.com/repos/ollama/ollama/releases/latest | grep "tag_name" | awk '{print substr($2, 3, length($2)-4)}')
     if [ "$OLLAMA_VERSION" != "$RELEASE" ]; then
-      curl -fsSLO https://ollama.com/download/ollama-linux-amd64.tgz
+      msg_info "Stopping Service"
+      systemctl stop ollama
+      msg_ok "Stopped Service"
+      curl -fsSLO -C - https://ollama.com/download/ollama-linux-amd64.tgz
+      rm -rf /usr/lib/ollama
+      rm -rf /usr/bin/ollama
       tar -C /usr -xzf ollama-linux-amd64.tgz
       rm -rf ollama-linux-amd64.tgz
+      msg_info "Starting Service"
+      systemctl start ollama
+      msg_info "Started Service"
       msg_ok "Ollama updated to version $RELEASE"
     else
       msg_ok "Ollama is already up to date."
@@ -43,7 +51,7 @@ function update_script() {
   fi
 
   msg_info "Updating ${APP} (Patience)"
-  cd /opt/open-webui || exit
+  cd /opt/open-webui
   mkdir -p /opt/open-webui-backup
   cp -rf /opt/open-webui/backend/data /opt/open-webui-backup
   git add -A
@@ -55,10 +63,10 @@ function update_script() {
     exit
   fi
   systemctl stop open-webui.service
-  $STD npm install
-  export NODE_OPTIONS="--max-old-space-size=3584"
+  $STD npm install --force
+  export NODE_OPTIONS="--max-old-space-size=6000"
   $STD npm run build
-  cd ./backend || exit
+  cd ./backend
   $STD pip install -r requirements.txt -U
   cp -rf /opt/open-webui-backup/* /opt/open-webui/backend
   if git stash list | grep -q 'stash@{'; then

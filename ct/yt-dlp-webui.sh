@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/cjlapao/MyProxmoxVE/main/misc/build.func)
+source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2025 community-scripts ORG
 # Author: CrazyWolf13
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
@@ -11,7 +11,7 @@ var_cpu="${var_cpu:-2}"
 var_ram="${var_ram:-1024}"
 var_disk="${var_disk:-4}"
 var_os="${var_os:-debian}"
-var_version="${var_version:-12}"
+var_version="${var_version:-13}"
 var_unprivileged="${var_unprivileged:-1}"
 
 header_info "$APP"
@@ -28,27 +28,22 @@ function update_script() {
     exit
   fi
 
-  msg_info "Updating yt-dlp"
-  $STD yt-dlp -U
-  msg_ok "Updated yt-dlp"
-  RELEASE=$(curl -fsSL https://api.github.com/repos/marcopiovanello/yt-dlp-web-ui/releases/latest | grep "tag_name" | awk '{print substr($2, 3, length($2)-4) }')
-  if [[ "${RELEASE}" != "$(cat /opt/yt-dlp-webui_version.txt)" ]] || [[ ! -f /opt/yt-dlp-webui_version.txt ]]; then
-
-    msg_info "Stopping $APP"
+  if check_for_gh_release "yt-dlp-webui" "marcopiovanello/yt-dlp-web-ui"; then
+    msg_info "Stopping Service"
     systemctl stop yt-dlp-webui
-    msg_ok "Stopped $APP"
+    msg_ok "Stopped Service"
 
-    msg_info "Updating $APP to v${RELEASE}"
+    msg_info "Updating yt-dlp"
+    $STD yt-dlp -U
+    msg_ok "Updated yt-dlp"
+
     rm -rf /usr/local/bin/yt-dlp-webui
-    curl -fsSL "https://github.com/marcopiovanello/yt-dlp-web-ui/releases/download/v${RELEASE}/yt-dlp-webui_linux-amd64" -o "/usr/local/bin/yt-dlp-webui"
-    chmod +x /usr/local/bin/yt-dlp-webui
-    msg_ok "Updated $APP LXC"
+    fetch_and_deploy_gh_release "yt-dlp-webui" "marcopiovanello/yt-dlp-web-ui" "singlefile" "latest" "/usr/local/bin" "yt-dlp-webui_linux-amd64"
 
-    msg_info "Starting $APP"
+    msg_info "Starting Service"
     systemctl start yt-dlp-webui
-    msg_ok "Started $APP"
-  else
-    msg_ok "No update required. ${APP} is already at v${RELEASE}"
+    msg_ok "Started Service"
+    msg_ok "Updated Successfully"
   fi
   exit
 }

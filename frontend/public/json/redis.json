@@ -9,7 +9,7 @@
   "updateable": false,
   "privileged": false,
   "interface_port": null,
-  "documentation": null,
+  "documentation": "https://redis.io/docs/latest/",
   "website": "https://redis.io/",
   "logo": "https://cdn.jsdelivr.net/gh/selfhst/icons/webp/redis.webp",
   "config_path": "Debian /etc/redis/redis.conf | Alpine: /etc/redis.conf",
@@ -23,7 +23,7 @@
         "ram": 1024,
         "hdd": 4,
         "os": "debian",
-        "version": "12"
+        "version": "13"
       }
     },
     {
@@ -34,7 +34,7 @@
         "ram": 256,
         "hdd": 1,
         "os": "alpine",
-        "version": "3.21"
+        "version": "3.22"
       }
     }
   ],

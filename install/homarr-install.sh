@@ -17,7 +17,6 @@ msg_info "Installing Dependencies"
 $STD apt-get install -y \
   redis-server \
   ca-certificates \
-  gpg \
   make \
   g++ \
   build-essential \
@@ -29,8 +28,8 @@ msg_ok "Installed Dependencies"
 
 NODE_VERSION=$(curl -s https://raw.githubusercontent.com/homarr-labs/homarr/dev/package.json | jq -r '.engines.node | split(">=")[1] | split(".")[0]')
 NODE_MODULE="pnpm@$(curl -s https://raw.githubusercontent.com/homarr-labs/homarr/dev/package.json | jq -r '.packageManager | split("@")[1]')"
-install_node_and_modules
-fetch_and_deploy_gh_release "homarr-labs/homarr"
+setup_nodejs
+fetch_and_deploy_gh_release "homarr" "homarr-labs/homarr"
 
 msg_info "Installing Homarr (Patience)"
 cd /opt
@@ -77,6 +76,7 @@ source /opt/homarr/.env
 set +a
 export DB_DIALECT='sqlite'
 export AUTH_SECRET=$(openssl rand -base64 32)
+export CRON_JOB_API_KEY=$(openssl rand -base64 32)
 node /opt/homarr_db/migrations/$DB_DIALECT/migrate.cjs /opt/homarr_db/migrations/$DB_DIALECT
 for dir in $(find /opt/homarr_db/migrations/migrations -mindepth 1 -maxdepth 1 -type d); do
   dirname=$(basename "$dir")
